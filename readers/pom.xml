@@ -11,6 +11,7 @@
 	<properties>
 		<javaee.version>8.0</javaee.version>
 		<spring.version>5.0.8.RELEASE</spring.version>
+		<spring.security.version>5.1.0.RELEASE</spring.security.version>
 	</properties>
 
 	<dependencies>
@@ -31,7 +32,7 @@
 			<version>${javaee.version}</version>
 			<scope>provided</scope>
 		</dependency>
-		
+
 		<!-- JSLT dependency -->
 		<dependency>
 			<groupId>jstl</groupId>
@@ -46,6 +47,8 @@
 			<version>3.8.1</version>
 			<scope>test</scope>
 		</dependency>
+
+
 	</dependencies>
 
 	<build>
