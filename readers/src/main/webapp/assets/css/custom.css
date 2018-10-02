@@ -1,3 +1,10 @@
 #main-content{
 	min-height:80vh;
 }
+
+.help-block{
+	color:red;
+	font-size:12px;
+	font-style: italic;
+	text-align:right;
+}

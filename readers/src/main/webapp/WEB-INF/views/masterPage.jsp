@@ -29,6 +29,9 @@
     <!-- Bootstrap Core CSS -->
     <link href="${css}/bootstrap.css" rel="stylesheet">
 
+	<!-- Bootstrap readable theme -->
+	<link href="${css}/bootstrap-readable-theme.css" rel="stylesheet">
+	
     <!-- Custom CSS -->
     <link href="${css}/theme-shop.css" rel="stylesheet">
     <link href="${css}/custom.css" rel="stylesheet">
@@ -53,41 +56,12 @@
 <body>
 
     <!-- Navigation -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-        <div class="container">
-            <!-- Brand and toggle get grouped for better mobile display -->
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a class="navbar-brand" href="#">Readers'</a>
-            </div>
-            <!-- Collect the nav links, forms, and other content for toggling -->
-            <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
-                <ul class="nav navbar-nav">
-                    <li>
-                        <a href="#">About</a>
-                    </li>
-                    <li>
-                        <a href="#">Services</a>
-                    </li>
-                    <li>
-                        <a href="#">Contact</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /.navbar-collapse -->
-        </div>
-        <!-- /.container -->
-    </nav>
+    <%@ include file="./shared/navbar.jsp" %>
 
     <!-- Page Content -->
     <div class="container" id="main-content">
     	
-    	<h2>${grettingMessage}</h2>
+    	<jsp:include page="./home.jsp"></jsp:include>
     	
     </div>
     <!-- /.container -->
