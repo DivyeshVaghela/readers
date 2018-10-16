@@ -37,10 +37,51 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		
 		//http.csrf().disable();
+		
+		
+		/*.antMatchers("/secured/**")
+			.authenticated()
+		.antMatchers("/reader/**")
+			.hasAuthority("READER")
+		.antMatchers("/assets/**")
+			.permitAll()
+		.anyRequest()
+			.permitAll()
+		.and()
+		.formLogin()
+			.loginPage("/login")
+			.permitAll()
+		.and()
+		.logout()
+			.logoutUrl("/logout")
+			.permitAll()
+		.and();
+		.exceptionHandling()
+			.accessDeniedPage("/access-denied");*/
+		
 		http.authorizeRequests()
-			.antMatchers("/secured/**")
+			.antMatchers("/assets/**")
+				.permitAll()
+			.antMatchers("/signup-reader")
+				.permitAll()
+			.antMatchers("/**")
 				.authenticated()
-			.antMatchers("/resources/**")
+				
+			.and()
+			.formLogin()
+				.loginPage("/login")
+				.permitAll()
+			.and()
+			.logout()
+				.logoutUrl("/logout")
+				.permitAll();
+			
+				
+			/*.antMatchers("/secured/**")
+				.authenticated()
+			.antMatchers("/reader/**")
+				.hasAuthority("READER")
+			.antMatchers("/assets/**")
 				.permitAll()
 			.anyRequest()
 				.permitAll()
@@ -52,12 +93,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.logout()
 				.logoutUrl("/logout")
 				.permitAll()
-			.and()
+			.and();
 			.exceptionHandling()
-				.accessDeniedPage("/access-denied");
+				.accessDeniedPage("/access-denied");*/
 	}
 
-	private PasswordEncoder getPasswordEncoder() {
+	/*private PasswordEncoder getPasswordEncoder() {
 		return new PasswordEncoder() {
 			
 			@Override
@@ -72,7 +113,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 				return rawPassword.toString();
 			}
 		};
-	}
+	}*/
 
 	
 }

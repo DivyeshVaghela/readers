@@ -8,10 +8,10 @@ import org.springframework.web.servlet.ModelAndView;
 @Controller
 public class HomeController {
 
-	@RequestMapping(value = {"/", "/index", "/home"})
+	//@RequestMapping(value = {"/", "/index", "/home"})
 	public ModelAndView index() {
 		
-		ModelAndView mv = new ModelAndView("masterPage");
+		ModelAndView mv = new ModelAndView("blankMasterPage");
 		mv.addObject("grettingMessage", "Welcome to Readers'");
 		
 		return mv;

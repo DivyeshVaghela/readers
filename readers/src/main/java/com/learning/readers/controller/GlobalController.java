@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import com.learning.readers.dao.IUserDAO;
 import com.learning.readers.entity.User;
 import com.learning.readers.model.UserModel;
+import com.learning.readers.util.ConstantUtil;
 
 @ControllerAdvice
 public class GlobalController {
@@ -23,7 +24,6 @@ public class GlobalController {
 
 	@ModelAttribute("userModel")
 	public UserModel getUserModel() {
-
 		if (session.getAttribute("userModel") == null) {
 
 			Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -45,7 +45,7 @@ public class GlobalController {
 				}
 			}
 		}
-
 		return (UserModel) session.getAttribute("userModel");
 	}
+	
 }

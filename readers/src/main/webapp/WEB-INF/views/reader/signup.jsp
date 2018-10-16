@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form"%>
 
 <div>
@@ -18,7 +19,7 @@
 			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 				<div class="input-group">
 					<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
-					<sf:input path="email" type="text" placeholder="Email" class="form-control"/>
+					<sf:input path="email" type="email" placeholder="Email" class="form-control"/>
 				</div>
 				<sf:errors path="email" class="help-block"/>
 			</div>
@@ -51,7 +52,7 @@
 					<sf:input path="confirmPassword" type="password" placeholder="Confirm Password" class="form-control"/>
 				</div>
 				<sf:errors path="confirmPassword" class="help-block"/>
-				<sf:errors path="passwordMatching" class="help-block"/>
+				<%-- <sf:errors path="" class="help-block"/> --%>
 			</div>
 		</div>
 		

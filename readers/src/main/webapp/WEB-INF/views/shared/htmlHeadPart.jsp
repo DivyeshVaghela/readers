@@ -3,12 +3,17 @@
 
 <!-- Required global variable configuration -->
 <c:set var="contextRoot" value="${pageContext.request.contextPath}" scope="request"/>
-<c:set var="applicationName" value="Readers'" scope="application" />
 
-<spring:url var="css" value="resources/css" scope="application"/>
-<spring:url var="js" value="resources/js" scope="application"/>
+<spring:url var="css" value="/assets/css" scope="application"/>
+<spring:url var="js" value="/assets/js" scope="application"/>
+<spring:url var="image" value="/assets/images" scope="application"/>
 <!-- END Required global variable configuration -->
 
+<!-- CONSTANTS -->
+<spring:eval var="APP_NAME" expression="T(com.learning.readers.util.ConstantUtil).APP_NAME" scope="request" />
+<spring:eval var="BOOK_COVER_DIR" expression="T(com.learning.readers.util.ConstantUtil).BOOK_COVER_DIR" scope="request" />
+<spring:eval var="BOOK_DEFAULT_COVER" expression="T(com.learning.readers.util.ConstantUtil).BOOK_DEFAULT_COVER" scope="request" />
+<!-- /CONSTANTS -->
 
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,7 +22,7 @@
 <meta name="author" content="">
 
 <title><c:if test="${not empty pageTitle}">${pageTitle} - </c:if>
-	${applicationName}</title>
+	${APP_NAME}</title>
 
 <!-- Styles -->
 <!-- Bootstrap Core CSS -->
@@ -33,10 +38,13 @@
 
 <!-- Scripts -->
 <!-- jQuery -->
-<script src="${js}/jquery.js"></script>
+<script src="${js}/jquery-3.1.1.js"></script>
 
 <!-- Bootstrap Core JavaScript -->
 <script src="${js}/bootstrap.js"></script>
+
+<!-- General utility functions -->
+<script src="${js}/utility.js"></script>
 
 <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

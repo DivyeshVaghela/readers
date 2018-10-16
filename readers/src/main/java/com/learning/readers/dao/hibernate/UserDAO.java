@@ -103,5 +103,10 @@ public class UserDAO implements IUserDAO {
 		});
 	}
 
+	@Override
+	public User findById(int userId) {
+		return hibernateTemplate.load(User.class, userId);
+	}
+
 	
 }

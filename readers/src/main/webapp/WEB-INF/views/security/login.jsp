@@ -23,7 +23,7 @@
 		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				<input type="text" name="username" placeholder="Username" class="form-control" />
+				<input type="text" name="username" placeholder="Username" class="form-control" value="shankar" />
 			</div>
 		</div>
 	</div>
@@ -32,7 +32,7 @@
 		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="password" name="password" placeholder="Password" class="form-control" />
+				<input type="password" name="password" placeholder="Password" class="form-control" value="123456" />
 			</div>
 		</div>
 	</div>

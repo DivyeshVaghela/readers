@@ -1,5 +1,6 @@
 package com.learning.readers.entity;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -48,6 +50,9 @@ public class User {
 			inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")})
 	private Set<Role> roles = new HashSet<>();;
 
+	@OneToMany(mappedBy="reader", fetch=FetchType.LAZY)
+	private List<Book> books = new ArrayList<>();
+	
 	public User() { }
 
 	public User(Integer id, String username, String email, String password, Boolean enabled, Set<Role> roles) {
@@ -101,6 +106,14 @@ public class User {
 
 	public void setEnabled(Boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	public List<Book> getBooks() {
+		return books;
+	}
+
+	public void setBooks(List<Book> books) {
+		this.books = books;
 	}
 
 	public Set<Role> getRoles() {

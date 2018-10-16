@@ -1,27 +1,27 @@
 package com.learning.readers.model;
 
-import javax.validation.constraints.AssertFalse;
-import javax.validation.constraints.AssertTrue;
-
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import com.learning.readers.dao.IUserDAO;
+import com.learning.readers.validator.EqualFields;
 
+@EqualFields(
+		baseField = "password", 
+		matchField = "confirmPassword",
+		message="Password and Confirm Password doesn't match")
 public class SignUpReaderModel {
 
 	@NotBlank(message="Username is mandatory field")
 	private String username;
 	
-	@NotBlank(message="Email is required")
+	@NotBlank(message="Email is mandatory field")
 	@Email(message="Please enter a valid email address")
 	private String email;
 	
-	@NotBlank(message="Password is required")
+	@NotBlank(message="Password is mandatory field")
 	private String password;
 	
-	@NotBlank(message="Confirm password is required")
+	@NotBlank(message="Confirm password is mandatory field")
 	private String confirmPassword;
 	
 	public String getUsername() {
@@ -66,7 +66,7 @@ public class SignUpReaderModel {
 		this.usernameExists = usernameExists;
 	}*/
 
-	private boolean passwordMatching;
+	/*private boolean passwordMatching;
 	
 	@AssertTrue(message="Password and Confirm Password doesn't match")
 	public boolean isPasswordMatching() {
@@ -80,7 +80,7 @@ public class SignUpReaderModel {
 
 	public void setPasswordMatching(boolean passwordMatching) {
 		this.passwordMatching = passwordMatching;
-	}
+	}*/
 	
 	@Override
 	public String toString() {
