@@ -8,62 +8,8 @@
 
 	<div class="col-md-3">
 	
-		<hr>
-		<div class="panel-group" id="accordion">
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion"
-							href="#quickLinks">Quick Links</a>
-					</h4>
-				</div>
-				<div id="quickLinks" class="panel-collapse collapse in">
-					<div class="list-group">
-						<div class="list-group-item">
-							<a href="${contextRoot}/book/create"><span class="glyphicon glyphicon-plus-sign"></span> New Book</a>
-						</div>
-						<div class="list-group-item">
-							Deleted <span class="badge">5</span>
-						</div>
-						<div class="list-group-item">
-							Warnings <span class="badge">3</span>
-						</div>
-					</div>
-				</div>
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion"
-							href="#collapse2">Collapsible Group 2</a>
-					</h4>
-				</div>
-				<div id="collapse2" class="panel-collapse collapse">
-					<div class="panel-body">
-					Lorem ipsum dolor sit amet,
-						consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-						labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-						nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.
-						</div>
-				</div>
-			</div>
-			<div class="panel panel-default">
-				<div class="panel-heading">
-					<h4 class="panel-title">
-						<a data-toggle="collapse" data-parent="#accordion"
-							href="#collapse3">Collapsible Group 3</a>
-					</h4>
-				</div>
-				<div id="collapse3" class="panel-collapse collapse">
-					<div class="panel-body">Lorem ipsum dolor sit amet,
-						consectetur adipisicing elit, sed do eiusmod tempor incididunt ut
-						labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-						nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-						consequat.</div>
-				</div>
-			</div>
-		</div>
+		<%@ include file="../shared/side-navbar.jsp" %>
+		
 	</div>
 
 	<div class="col-md-9">
@@ -81,11 +27,13 @@
 						<div id="resentlyAdded" class="carousel slide">
 	
 							<spring:eval var="totalSlides" expression="T(java.lang.Math).ceil(T(java.lang.Double).parseDouble(${fn:length(model.resentlyAdded)}) div BOOK_PER_CAROUSEL_SCREEN) - 1"></spring:eval>
-							<ol class="carousel-indicators">
-								<c:forEach begin="0" end="${totalSlides}" var="count">
-									<li data-target="#resentlyAdded" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
-								</c:forEach>
-							</ol>
+							<c:if test="${totalSlides ne 0}">
+								<ol class="carousel-indicators">
+									<c:forEach begin="0" end="${totalSlides}" var="count">
+										<li data-target="#resentlyAdded" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
+									</c:forEach>
+								</ol>
+							</c:if>
 	
 							<!-- Carousel items -->
 							<div class="carousel-inner">
@@ -96,56 +44,8 @@
 										<div class="row">
 								
 											<c:forEach items="${model.resentlyAdded}" begin="${count * BOOK_PER_CAROUSEL_SCREEN}" end="${(count * BOOK_PER_CAROUSEL_SCREEN) + BOOK_PER_CAROUSEL_SCREEN - 1}" var="book" >
-												<div class="col-sm-4">
-													<div class="well well-sm">
-	
-														<div class="row">
-	
-															<div class="col-xs-12 col-sm-12 col-md-12">
-																<div class="carousel-image-wrapper">
-																	<img
-																		src="${contextRoot.concat(BOOK_COVER_DIR.concat(book.coverPhoto))}"
-																		alt="${book.name.concat(' ').concat(book.edition)}" title="${book.name.concat(' ').concat(book.edition)}" class="img-responsive carousel-image" />
-																</div>
-															</div>
-	
-															<div class="col-xs-12 col-sm-12 col-md-12">
-																<div class="row">
-																	<div class="col-sm-12">
-																		<h5 title="${book.name.concat(' ').concat(book.edition)}">
-																			<a href="${contextRoot.concat('/book/').concat(''+book.id)}">
-																				${book.name}
-																				<c:if test="${not empty book.edition}">
-																					<small>(${book.edition})</small>
-																				</c:if>
-																			</a>
-																		</h5>
-																	</div>
-																	<%-- <div class="col-sm-12">
-																		<p class="data-text-color">
-																			${book.details}
-																		</p>
-																	</div> --%>
-																</div>
-	
-																<div class="row">
-																	<div class="col-xs-6">
-																		<h5>Read</h5>
-																	</div>
-																	<div class="col-xs-6">
-																		<h5 class="pull-right text-primary">Rating</h5>
-																	</div>
-																</div>
-	
-																<div class="clearfix"></div>
-															</div>
-	
-														</div>
-														<!-- /.row -->
-													</div>
-													<!-- /.well -->
-												</div>
-												<!-- /.col -->
+												<%@include file="../shared/item-widget.jsp"%>
+												<%-- <jsp:include page="../shared/item-widget.jsp"></jsp:include> --%>
 											</c:forEach>
 								
 										</div>
@@ -153,253 +53,15 @@
 									</div>
 									<!-- /.item -->
 								</c:forEach>
-								<%-- <div class="item active">
-									<div class="row">
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div class="row">
-												
-													<div class="col-xs-12 col-sm-12 col-md-12">
-														<div>
-															<img
-																src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-																alt="Readers'" class="img-responsive carousel-image" />
-														</div>
-													</div>
-												
-													<div class="col-xs-12 col-sm-12 col-md-12">
-														<div class="row">
-															<div class="col-sm-12">
-																<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-															</div>
-															<div class="col-sm-12">
-																<p class="data-text-color">The small description about
-																	the book</p>
-															</div>
-														</div>
-			
-														<div class="row">
-															<div class="col-xs-6">
-																<h5>Read</h5>
-															</div>
-															<div class="col-xs-6">
-																<h5 class="pull-right text-primary">Rating</h5>
-															</div>
-														</div>
-			
-														<div class="clearfix"></div>
-													</div>
-													
-												</div>
-	
-											</div>
-										</div>
-										
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div>
-													<img
-														src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-														alt="Readers'" class="img-responsive carousel-image" />
-												</div>
-	
-												<div class="row">
-													<div class="col-sm-12">
-														<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-													</div>
-													<div class="col-sm-12">
-														<p class="data-text-color">The small description about
-															the book</p>
-													</div>
-												</div>
-	
-												<div class="row">
-													<div class="col-xs-6">
-														<h5>Read</h5>
-													</div>
-													<div class="col-xs-6">
-														<h5 class="pull-right text-primary">Rating</h5>
-													</div>
-												</div>
-	
-												<div class="clearfix"></div>
-	
-											</div>
-										</div>
-										
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div>
-													<img
-														src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-														alt="Readers'" class="img-responsive carousel-image" />
-												</div>
-	
-												<div class="row">
-													<div class="col-sm-12">
-														<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-													</div>
-													<div class="col-sm-12">
-														<p class="data-text-color">The small description about
-															the book</p>
-													</div>
-												</div>
-	
-												<div class="row">
-													<div class="col-xs-6">
-														<h5>Read</h5>
-													</div>
-													<div class="col-xs-6">
-														<h5 class="pull-right text-primary">Rating</h5>
-													</div>
-												</div>
-	
-												<div class="clearfix"></div>
-	
-											</div>
-										</div>
-									</div>
-									<!--.row-->
-								</div>
-								<!--.item-->
-	
-								<div class="item">
-									<div class="row">
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div>
-													<img
-														src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-														alt="Readers'" class="img-responsive carousel-image" />
-												</div>
-	
-												<div class="row">
-													<div class="col-sm-12">
-														<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-													</div>
-													<div class="col-sm-12">
-														<p class="data-text-color">The small description about
-															the book</p>
-													</div>
-												</div>
-	
-												<div class="row">
-													<div class="col-xs-6">
-														<h5>Read</h5>
-													</div>
-													<div class="col-xs-6">
-														<h5 class="pull-right text-primary">Rating</h5>
-													</div>
-												</div>
-	
-												<div class="clearfix"></div>
-	
-											</div>
-										</div>
-										
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div>
-													<img
-														src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-														alt="Readers'" class="img-responsive carousel-image" />
-												</div>
-	
-												<div class="row">
-													<div class="col-sm-12">
-														<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-													</div>
-													<div class="col-sm-12">
-														<p class="data-text-color">The small description about
-															the book</p>
-													</div>
-												</div>
-	
-												<div class="row">
-													<div class="col-xs-6">
-														<h5>Read</h5>
-													</div>
-													<div class="col-xs-6">
-														<h5 class="pull-right text-primary">Rating</h5>
-													</div>
-												</div>
-	
-												<div class="clearfix"></div>
-	
-											</div>
-										</div>
-										
-										<div class="col-sm-4">
-											<div class="well well-sm">
-	
-												<div>
-													<img
-														src="${contextRoot.concat(BOOK_COVER_DIR.concat(BOOK_DEFAULT_COVER))}"
-														alt="Readers'" class="img-responsive carousel-image" />
-												</div>
-	
-												<div class="row">
-													<div class="col-sm-12">
-														<h5><a href="#">Operating System Concepts (Edition)</a></h5>
-													</div>
-													<div class="col-sm-12">
-														<p class="data-text-color">The small description about
-															the book</p>
-													</div>
-												</div>
-	
-												<div class="row">
-													<div class="col-xs-6">
-														<h5>Read</h5>
-													</div>
-													<div class="col-xs-6">
-														<h5 class="pull-right text-primary">Rating</h5>
-													</div>
-												</div>
-	
-												<div class="clearfix"></div>
-	
-											</div>
-										</div>
-										
-									</div>
-									<!--.row-->
-								</div>
-								<!--.item-->
-	
-								<div class="item">
-									<div class="row">
-										<div class="col-md-4">
-											<a href="#" class="thumbnail"><img
-												src="http://placehold.it/250x250" alt="Image"
-												style="max-width: 100%;"></a>
-										</div>
-										<div class="col-md-4">
-											<a href="#" class="thumbnail"><img
-												src="http://placehold.it/250x250" alt="Image"
-												style="max-width: 100%;"></a>
-										</div>
-										<div class="col-md-4">
-											<a href="#" class="thumbnail"><img
-												src="http://placehold.it/250x250" alt="Image"
-												style="max-width: 100%;"></a>
-										</div>
-									</div>
-									<!--.row-->
-								</div> --%>
-								<!--.item-->
-	
 							</div>
 							<!--.carousel-inner-->
-							<a data-slide="prev" href="#resentlyAdded"
-								class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
-							<a data-slide="next"
-								href="#resentlyAdded" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
+							
+							<c:if test="${totalSlides ne 0}">
+								<a data-slide="prev" href="#resentlyAdded"
+									class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
+								<a data-slide="next"
+									href="#resentlyAdded" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
+							</c:if>
 						</div>
 						<!--.Carousel-->
 	
@@ -409,7 +71,121 @@
 			<!--.container-->
 		</c:if>
 		
-		<c:if test="${empty model.resentlyAdded or fn:length(model.resentlyAdded) eq 0}">
+		<!-- wishlist -->
+		<c:if test="${not empty model.wishList or fn:length(model.wishList) ne 0}">
+		
+			<h2>Wish List</h2>
+			<hr>
+	
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<div id="wishList" class="carousel slide">
+	
+							<spring:eval var="totalSlides" expression="T(java.lang.Math).ceil(T(java.lang.Double).parseDouble(${fn:length(model.wishList)}) div BOOK_PER_CAROUSEL_SCREEN) - 1"></spring:eval>
+							<c:if test="${totalSlides ne 0}">
+								<ol class="carousel-indicators">
+									<c:forEach begin="0" end="${totalSlides}" var="count">
+										<li data-target="#wishList" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
+									</c:forEach>
+								</ol>
+							</c:if>
+	
+							<!-- Carousel items -->
+							<div class="carousel-inner">
+	
+								<c:forEach begin="0" end="${totalSlides}" var="count">
+								
+									<div class="item ${count == 0 ? 'active' : ''}">
+										<div class="row">
+								
+											<c:forEach items="${model.wishList}" begin="${count * BOOK_PER_CAROUSEL_SCREEN}" end="${(count * BOOK_PER_CAROUSEL_SCREEN) + BOOK_PER_CAROUSEL_SCREEN - 1}" var="book" >
+												<%@include file="../shared/item-widget.jsp"%>
+												<%-- <jsp:include page="../shared/item-widget.jsp"></jsp:include> --%>
+											</c:forEach>
+								
+										</div>
+										<!-- /.row -->
+									</div>
+									<!-- /.item -->
+								</c:forEach>
+							</div>
+							<!--.carousel-inner-->
+							
+							<c:if test="${totalSlides ne 0}">
+								<a data-slide="prev" href="#wishList"
+									class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
+								<a data-slide="next"
+									href="#wishList" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
+							</c:if>
+						</div>
+						<!--.Carousel-->
+	
+					</div>
+				</div>
+			</div>
+			<!--.container-->
+		</c:if>
+		<!-- /wishlist -->
+		
+		<!-- shared -->
+		<c:if test="${not empty model.sharedToMeBooks or fn:length(model.sharedToMeBooks) ne 0}">
+		
+			<h2>Shared</h2>
+			<hr>
+	
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<div id="sharedToMeBooks" class="carousel slide">
+	
+							<spring:eval var="totalSlides" expression="T(java.lang.Math).ceil(T(java.lang.Double).parseDouble(${fn:length(model.sharedToMeBooks)}) div BOOK_PER_CAROUSEL_SCREEN) - 1"></spring:eval>
+							<c:if test="${totalSlides ne 0}">
+								<ol class="carousel-indicators">
+									<c:forEach begin="0" end="${totalSlides}" var="count">
+										<li data-target="#sharedToMeBooks" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
+									</c:forEach>
+								</ol>
+							</c:if>
+	
+							<!-- Carousel items -->
+							<div class="carousel-inner">
+	
+								<c:forEach begin="0" end="${totalSlides}" var="count">
+								
+									<div class="item ${count == 0 ? 'active' : ''}">
+										<div class="row">
+								
+											<c:forEach items="${model.sharedToMeBooks}" begin="${count * BOOK_PER_CAROUSEL_SCREEN}" end="${(count * BOOK_PER_CAROUSEL_SCREEN) + BOOK_PER_CAROUSEL_SCREEN - 1}" var="book" >
+												<%@include file="../shared/item-widget.jsp"%>
+												<%-- <jsp:include page="../shared/item-widget.jsp"></jsp:include> --%>
+											</c:forEach>
+								
+										</div>
+										<!-- /.row -->
+									</div>
+									<!-- /.item -->
+								</c:forEach>
+							</div>
+							<!--.carousel-inner-->
+							
+							<c:if test="${totalSlides ne 0}">
+								<a data-slide="prev" href="#sharedToMeBooks"
+									class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
+								<a data-slide="next"
+									href="#sharedToMeBooks" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
+							</c:if>
+						</div>
+						<!--.Carousel-->
+	
+					</div>
+				</div>
+			</div>
+			<!--.container-->
+		</c:if>
+		<!-- shared -->
+		
+		<c:if test="${(empty model.resentlyAdded or fn:length(model.resentlyAdded) eq 0) and (empty model.wishList or fn:length(model.wishList) eq 0) and (empty model.sharedToMeBooks or fn:length(model.sharedToMeBooks) eq 0)}">
 			<div class="row text-center">
 				<br><br><br>
 				<div class="col-sm-offset-3 col-sm-6">
@@ -436,6 +212,8 @@
 		$('.carousel').carousel({
 			interval:false
 		});
+		
+		$('#sideNav_home').addClass("active");
 	});
 
 </script>

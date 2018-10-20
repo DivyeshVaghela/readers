@@ -19,7 +19,7 @@ public class ReadDetail {
 
 	@Id
 	@GeneratedValue(generator="gen")
-	@GenericGenerator(name="gen", strategy="foreign", parameters=@Parameter(name = "property", value = "book"))
+	@GenericGenerator(name="gen", strategy="foreign", parameters=@Parameter(name = "property", value = "bookUser"))
 	@Column(name="id")
 	private Integer id;
 	
@@ -56,11 +56,14 @@ public class ReadDetail {
 	@Column(name="modification_time", insertable=false, updatable=false)
 	private Date modificationTime;
 
+	/*@OneToOne
+	@PrimaryKeyJoinColumn
+	private Book book;*/
+	
 	@OneToOne
 	@PrimaryKeyJoinColumn
-	private Book book;
+	private BookUser bookUser;
 	
-
 	
 	public ReadDetail() {}
 
@@ -177,14 +180,23 @@ public class ReadDetail {
 		this.modificationTime = modificationTime;
 	}
 
-	public Book getBook() {
+	/*public Book getBook() {
 		return book;
 	}
 
 	public void setBook(Book book) {
 		this.book = book;
+	}*/
+
+	public BookUser getBookUser() {
+		return bookUser;
 	}
 
+	public void setBookUser(BookUser bookUser) {
+		this.bookUser = bookUser;
+	}
+	
+	
 	@Override
 	public String toString() {
 		return "ReadDetail [id=" + id + ", startDate=" + startDate + ", startMonth=" + startMonth + ", startYear="
@@ -192,6 +204,7 @@ public class ReadDetail {
 				+ place + ", rating=" + rating + ", review=" + review + ", creationTime=" + creationTime
 				+ ", modificationTime=" + modificationTime + "]";
 	}
+
 	
 	
 }

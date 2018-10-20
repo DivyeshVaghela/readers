@@ -65,6 +65,8 @@ public class CreateBookBasicDetailsModel {
 	public void setPublishedDate(Integer publishedDate) {
 		this.publishedDate = publishedDate;
 	}
-	
+	public String getFullName() {
+		return this.getName() + (this.getEdition() == null ? "" : " (" + this.getEdition() + ")");
+	}
 	
 }

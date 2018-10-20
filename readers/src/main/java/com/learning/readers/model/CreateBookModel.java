@@ -43,7 +43,7 @@ public class CreateBookModel {
 	private Integer readStatus;
 	private List<ReadStatusValueModel> readStatusList = new ArrayList<>();
 	
-	private CreateReadDetailsModel readDeatils;
+	private CreateReadDetailsModel readDetails;
 	
 	private List<CreateAuthorModel> authors = new ArrayList<>();
 	private List<Integer> authorIds = new ArrayList<>();
@@ -165,11 +165,11 @@ public class CreateBookModel {
 		this.bookSource = bookSource;
 	}
 	
-	public CreateReadDetailsModel getReadDeatils() {
-		return readDeatils;
+	public CreateReadDetailsModel getReadDetails() {
+		return readDetails;
 	}
-	public void setReadDeatils(CreateReadDetailsModel readDeatils) {
-		this.readDeatils = readDeatils;
+	public void setReadDetails(CreateReadDetailsModel readDetails) {
+		this.readDetails = readDetails;
 	}
 	/*public MultipartFile getBookCover() {
 		return bookCover;

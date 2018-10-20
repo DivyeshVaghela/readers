@@ -306,17 +306,17 @@
 			
 			<div class="form-group">
 				<div class="col-md-offset-3 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.startYear" title="Start Year" class="form-control" onchange="populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')">
+					<sf:select path="readDetails.startYear" title="Start Year" class="form-control" onchange="populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')">
 						<sf:option value="">Start Year..</sf:option>
 					</sf:select>
 				</div>
 				<div class="col-md-offset-0 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.startMonth" title="Start Month" class="form-control" onchange="populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')">
+					<sf:select path="readDetails.startMonth" title="Start Month" class="form-control" onchange="populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')">
 						<sf:option value="">Start Month..</sf:option>
 					</sf:select>
 				</div>
 				<div class="col-md-offset-0 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.startDate" title="Start Date" class="form-control">
+					<sf:select path="readDetails.startDate" title="Start Date" class="form-control">
 						<sf:option value="">Start Date..</sf:option>
 					</sf:select>
 				</div>
@@ -331,17 +331,17 @@
 			
 			<div class="form-group">
 				<div class="col-md-offset-3 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.endYear" title="End Year" class="form-control" onchange="populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')">
+					<sf:select path="readDetails.endYear" title="End Year" class="form-control" onchange="populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')">
 						<sf:option value="">End Year..</sf:option>
 					</sf:select>
 				</div>
 				<div class="col-md-offset-0 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.endMonth" title="End Month" class="form-control" onchange="populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')">
+					<sf:select path="readDetails.endMonth" title="End Month" class="form-control" onchange="populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')">
 						<sf:option value="">End Month..</sf:option>
 					</sf:select>
 				</div>
 				<div class="col-md-offset-0 col-md-2 col-sm-offset-2 col-sm-8">
-					<sf:select path="readDeatils.endDate" title="End Date" class="form-control">
+					<sf:select path="readDetails.endDate" title="End Date" class="form-control">
 						<sf:option value="">End Date..</sf:option>
 					</sf:select>
 				</div>
@@ -349,13 +349,13 @@
 			
 			<div class="form-group">
 				<div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8">
-					<sf:input path="readDeatils.rating" type="number" start="1" end="5" placeholder="Rating" title="Rating" class="form-control"/>
+					<sf:input path="readDetails.rating" type="number" start="1" end="5" placeholder="Rating" title="Rating" class="form-control"/>
 				</div>
 			</div>
 		
 			<div class="form-group">
 				<div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8">
-					<sf:textarea path="readDeatils.review" placeholder="Short reading experience.." title="Review" class="form-control only-vertical"/>
+					<sf:textarea path="readDetails.review" placeholder="Short reading experience.." title="Review" class="form-control only-vertical"/>
 				</div>
 			</div>
 		
@@ -420,21 +420,22 @@
 
 <script type="text/javascript">
 	
-	readStartYear.val(${book.readDeatils.startYear});
-	var readStartMonthSelected = ${book.readDeatils.startMonth}+"";
-	if (readStartMonthSelected != ""){
-		readStartMonth.val(readStartMonthSelected);		
-	}
-	populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')
-	readStartDate.val(${book.readDeatils.startDate});
-
-	readEndYear.val(${book.readDeatils.endYear});
-	var readEndMonthSelected = ${book.readDeatils.endMonth}+"";
-	if (readEndMonthSelected != ""){
-		readEndMonth.val(readEndMonthSelected);		
-	}
-	populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')
-	readEndDate.val(${book.readDeatils.endDate});
+	$(function(){
+		readStartYear.val(${book.readDetails.startYear});
+		var readStartMonthSelected = ${book.readDetails.startMonth}+"";
+		if (readStartMonthSelected != ""){
+			readStartMonth.val(readStartMonthSelected);		
+		}
+		populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')
+		readStartDate.val(${book.readDetails.startDate});
 	
+		readEndYear.val(${book.readDetails.endYear});
+		var readEndMonthSelected = ${book.readDetails.endMonth}+"";
+		if (readEndMonthSelected != ""){
+			readEndMonth.val(readEndMonthSelected);		
+		}
+		populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')
+		readEndDate.val(${book.readDetails.endDate});
+	});
 	
 </script>

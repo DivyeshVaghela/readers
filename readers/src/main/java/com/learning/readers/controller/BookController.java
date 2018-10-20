@@ -3,6 +3,7 @@ package com.learning.readers.controller;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -21,17 +22,20 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.learning.readers.dao.IAuthorDAO;
 import com.learning.readers.dao.IBookDAO;
+import com.learning.readers.dao.IBookShareDAO;
 import com.learning.readers.dao.IBookSourceDAO;
 import com.learning.readers.dao.IBookTypeDAO;
 import com.learning.readers.dao.IPublicationDAO;
 import com.learning.readers.dao.IReadStatusDAO;
 import com.learning.readers.dao.IUserDAO;
-import com.learning.readers.dao.hibernate.BookSourceDAO;
 import com.learning.readers.entity.Author;
 import com.learning.readers.entity.Book;
+import com.learning.readers.entity.BookShare;
 import com.learning.readers.entity.BookSource;
+import com.learning.readers.entity.BookUser;
 import com.learning.readers.entity.Publication;
 import com.learning.readers.entity.ReadDetail;
+import com.learning.readers.entity.User;
 import com.learning.readers.model.CreateAuthorModel;
 import com.learning.readers.model.CreateBookBasicDetailsModel;
 import com.learning.readers.model.CreateBookModel;
@@ -39,6 +43,7 @@ import com.learning.readers.model.CreateBookSourceModel;
 import com.learning.readers.model.CreatePublicationModel;
 import com.learning.readers.model.CreateReadDetailsModel;
 import com.learning.readers.model.CreateReadProgressModel;
+import com.learning.readers.model.ShareBookModel;
 import com.learning.readers.model.UserModel;
 import com.learning.readers.util.ConstantUtil;
 import com.learning.readers.util.FileUploadUtil;
@@ -68,31 +73,44 @@ public class BookController {
 	@Autowired
 	CreateBookSourceModelValidator createBookSourceModelValidator;
 	
-	private void populateBookDetails(ModelAndView mv, Book book, CreateBookSourceModel createBookSourceModel, CreateReadProgressModel createReadProgressModel) {
+	private void populateBookDetails(ModelAndView mv, Book book, CreateBookSourceModel createBookSourceModel, CreateReadProgressModel createReadProgressModel, UserModel userModel) {
 		
 		mv.addObject("contentPagePath", "./book/details.jsp");
 		mv.addObject("pageTitle", book.getFullName());
 		
 		mv.addObject("book", book);
 		
-		if (createBookSourceModel == null) {
-			createBookSourceModel = new CreateBookSourceModel();
-			BookSource source = book.getSource();
-			if (source != null) {
-				createBookSourceModel.setId(source.getId());
-				createBookSourceModel.setBookTypeId(source.getType().getId());
-				createBookSourceModel.setValue(source.getValue());
+		if (book.getUser().getId() == userModel.getUserId()) {
+			if (createBookSourceModel == null) {
+				createBookSourceModel = new CreateBookSourceModel();
+				BookSource source = book.getSource();
+				if (source != null) {
+					createBookSourceModel.setId(source.getId());
+					createBookSourceModel.setBookTypeId(source.getType().getId());
+					createBookSourceModel.setValue(source.getValue());
+				}
 			}
+			createBookSourceModel.setBookTypeList(bookTypeDAO.listValues());
 		}
-		createBookSourceModel.setBookTypeList(bookTypeDAO.listValues());
 		mv.addObject("bookSource", createBookSourceModel);
 		
 		if (createReadProgressModel == null) {
-			createReadProgressModel = new CreateReadProgressModel();
-			createReadProgressModel.setReadStatus(book.getStatus().getId());
 			
+			BookUser bookUser = null;
+			if (book.getBookReaders() != null) {
+				bookUser = book.getBookReaders().stream()
+					.filter(bookReader -> bookReader.getUser().getId() == userModel.getUserId())
+					.findFirst()
+					.orElse(null);
+			}
+			
+			createReadProgressModel = new CreateReadProgressModel();
+			ReadDetail readDetails = null;
+			if (bookUser != null) {
+				createReadProgressModel.setReadStatus(bookUser.getStatus().getId());
+				readDetails = bookUser.getReadDetails();
+			}
 			CreateReadDetailsModel createReadDetailsModel = new CreateReadDetailsModel();
-			ReadDetail readDetails = book.getReadDetails();
 			if (readDetails == null) {
 				readDetails = new ReadDetail();
 			}
@@ -108,9 +126,18 @@ public class BookController {
 			
 			createReadDetailsModel.setReview(readDetails.getReview());
 			createReadDetailsModel.setRating(readDetails.getRating());
+			
+			createReadProgressModel.setReadDetails(createReadDetailsModel);
 		}
+		
 		createReadProgressModel.setReadStatusList(readStatusDAO.listValues());
 		mv.addObject("readProgress", createReadProgressModel);
+		
+		//Book sharing
+		ShareBookModel shareBookModel = new ShareBookModel();
+		shareBookModel.setBookId(book.getId());
+		shareBookModel.setUserNameEmailList(userDAO.listNameEmail(userModel.getUserId()));
+		mv.addObject("shareBook", shareBookModel);
 		
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
@@ -129,31 +156,11 @@ public class BookController {
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 		Book book = bookDAO.findById(bookId, userModel.getUserId(), true);
 		
-		populateBookDetails(mv, book, null, null);
-		
-		/*mv.addObject("book", book);
-
-		mv.addObject("contentPagePath", "./book/details.jsp");
-		mv.addObject("pageTitle", book.getFullName());
-		
-		CreateBookSourceModel createBookSourceModel = new CreateBookSourceModel();
-		createBookSourceModel.setBookTypeList(bookTypeDAO.listValues());
-		BookSource source = book.getSource();
-		if (source != null) {
-			createBookSourceModel.setId(source.getId());
-			createBookSourceModel.setBookTypeId(source.getType().getId());
-		}
-		mv.addObject("bookSource", createBookSourceModel);
-		
-		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
-		breadcrumbItems.put("Home", "");
-		breadcrumbItems.put("Book", "book");
-		breadcrumbItems.put(book.getFullName(), "book/"+bookId);
-		mv.addObject("breadcrumbItems", breadcrumbItems);*/
+		populateBookDetails(mv, book, null, null, userModel);
 		
 		return mv;
 	}
-	
+
 	private void populateCreateBookModel(ModelAndView mv, CreateBookModel model) {
 		
 		mv.addObject("pageTitle", "New Book");
@@ -236,7 +243,8 @@ public class BookController {
 
 		//add the user
 		UserModel userModel = (UserModel)session.getAttribute("userModel");
-		book.setReader(userDAO.findById(userModel.getUserId()));
+		User user = userDAO.findById(userModel.getUserId());
+		book.setUser(user);
 		
 		//add the publication
 		if (model.getPublicationId() != null) {
@@ -291,42 +299,35 @@ public class BookController {
 		}
 		
 		//set the read status
-		book.setStatus(readStatusDAO.findById(model.getReadStatus()));
+		BookUser bookUser = new BookUser();
+		bookUser.setUser(user);
+		bookUser.setBook(book);
+		bookUser.setStatus(readStatusDAO.findById(model.getReadStatus()));
+		book.getBookReaders().add(bookUser);
+		
+		//book.setStatus(readStatusDAO.findById(model.getReadStatus()));
 		
 		//Read details
 		if (model.getReadStatus() != 1) {
 			ReadDetail readDetail = new ReadDetail();
 			
-			readDetail.setStartDate(model.getReadDeatils().getStartDate());
-			readDetail.setStartMonth(model.getReadDeatils().getStartMonth());
-			readDetail.setStartYear(model.getReadDeatils().getStartYear());
+			readDetail.setStartDate(model.getReadDetails().getStartDate());
+			readDetail.setStartMonth(model.getReadDetails().getStartMonth());
+			readDetail.setStartYear(model.getReadDetails().getStartYear());
 			
 			if (model.getReadStatus() == 3) {
-				readDetail.setEndDate(model.getReadDeatils().getEndDate());
-				readDetail.setEndMonth(model.getReadDeatils().getEndMonth());
-				readDetail.setEndYear(model.getReadDeatils().getEndYear());
+				readDetail.setEndDate(model.getReadDetails().getEndDate());
+				readDetail.setEndMonth(model.getReadDetails().getEndMonth());
+				readDetail.setEndYear(model.getReadDetails().getEndYear());
 				
-				readDetail.setRating(model.getReadDeatils().getRating());
-				readDetail.setReview(model.getReadDeatils().getReview());
+				readDetail.setRating(model.getReadDetails().getRating());
+				readDetail.setReview(model.getReadDetails().getReview());
 			}
-			readDetail.setBook(book);
-			book.setReadDetails(readDetail);
+			readDetail.setBookUser(bookUser);
+			bookUser.setReadDetails(readDetail);
+			//readDetail.setBook(book);
+			//book.setReadDetails(readDetail);
 		}
-		
-		
-		/*readDetail.setStartDate(model.getReadDeatils().getStartDate());
-		readDetail.setStartMonth(model.getReadDeatils().getStartMonth());
-		readDetail.setStartYear(model.getReadDeatils().getStartYear());
-		
-		readDetail.setEndDate(model.getReadDeatils().getEndDate());
-		readDetail.setEndMonth(model.getReadDeatils().getEndMonth());
-		readDetail.setEndYear(model.getReadDeatils().getEndYear());
-		
-		readDetail.setRating(model.getReadDeatils().getRating());
-		readDetail.setReview(model.getReadDeatils().getReview());
-		
-		readDetail.setBook(book);
-		book.setReadDetails(readDetail);*/
 		
 		try {
 			bookDAO.create(book);
@@ -337,6 +338,7 @@ public class BookController {
 			mv.addObject("contentPagePath", "./book/create.jsp");
 			
 			populateCreateBookModel(mv, model);
+			exp.printStackTrace();
 		}
 		
 		return mv;
@@ -371,7 +373,7 @@ public class BookController {
 		if (publication != null) {
 			model.setPublicationId(publication.getId());
 		}
-		model.setReadStatus(book.getStatus().getId());
+		//model.setReadStatus(book.getStatus().getId());
 		
 		//Authors
 		if (book.getAuthors() != null && book.getAuthors().size() > 0) {
@@ -528,41 +530,60 @@ public class BookController {
 		ModelAndView mv = new ModelAndView();
 		
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
-		Book book = bookDAO.findById(readProgressModel.getReadDeatils().getId(), userModel.getUserId(), true);
+		Book book = bookDAO.findById(readProgressModel.getReadDetails().getId(), userModel.getUserId(), true);
 		if (bindingResult.hasErrors()) {
 			mv.setViewName("blankMasterPage");
 			mv.addObject("updateError", "Validation failed, please fill form properly");
 			
-			populateBookDetails(mv, book, null, readProgressModel);
+			populateBookDetails(mv, book, null, readProgressModel, userModel);
 
 			return mv;
 		}
 		
 		//Update the Read Progress status
-		book.setStatus(readStatusDAO.findById(readProgressModel.getReadStatus()));
+		List<BookUser> bookReaders = book.getBookReaders();
+		BookUser bookReader;
+		if (bookReaders != null) {
+			bookReader = bookReaders.stream()
+						.filter(reader -> reader.getUser().getId() == userModel.getUserId())
+						.findFirst()
+						.orElse(new BookUser());
+		} else {
+			bookReader = new BookUser();
+		}
+		bookReader.setStatus(readStatusDAO.findById(readProgressModel.getReadStatus()));
+		//book.setStatus(readStatusDAO.findById(readProgressModel.getReadStatus()));
 
 		//Read details
 		if (readProgressModel.getReadStatus() != 1) {
-			ReadDetail readDetail = new ReadDetail();
 			
-			readDetail.setStartDate(readProgressModel.getReadDeatils().getStartDate());
-			readDetail.setStartMonth(readProgressModel.getReadDeatils().getStartMonth());
-			readDetail.setStartYear(readProgressModel.getReadDeatils().getStartYear());
+			ReadDetail readDetail = bookReader.getReadDetails();
+			if (readDetail == null) {
+				readDetail = new ReadDetail();
+				readDetail.setBookUser(bookReader);
+			}
+			
+			readDetail.setStartDate(readProgressModel.getReadDetails().getStartDate());
+			readDetail.setStartMonth(readProgressModel.getReadDetails().getStartMonth());
+			readDetail.setStartYear(readProgressModel.getReadDetails().getStartYear());
 			
 			if (readProgressModel.getReadStatus() == 3) {
-				readDetail.setEndDate(readProgressModel.getReadDeatils().getEndDate());
-				readDetail.setEndMonth(readProgressModel.getReadDeatils().getEndMonth());
-				readDetail.setEndYear(readProgressModel.getReadDeatils().getEndYear());
+				readDetail.setEndDate(readProgressModel.getReadDetails().getEndDate());
+				readDetail.setEndMonth(readProgressModel.getReadDetails().getEndMonth());
+				readDetail.setEndYear(readProgressModel.getReadDetails().getEndYear());
 				
-				readDetail.setRating(readProgressModel.getReadDeatils().getRating());
-				readDetail.setReview(readProgressModel.getReadDeatils().getReview());
+				readDetail.setRating(readProgressModel.getReadDetails().getRating());
+				readDetail.setReview(readProgressModel.getReadDetails().getReview());
 			}
-			readDetail.setBook(book);
-			book.setReadDetails(readDetail);
+			readDetail.getBookUser().setBook(book);
+			//readDetail.setBook(book);
+			
+			bookReader.setReadDetails(readDetail);
+			//book.setReadDetails(readDetail);
 		}
 
 		bookDAO.update(book);
-		mv.setViewName("redirect:/book/"+readProgressModel.getReadDeatils().getId());
+		mv.setViewName("redirect:/book/"+readProgressModel.getReadDetails().getId());
 		redirectAttributes.addFlashAttribute("successMessage", "Book reading progress details updated successfully.");
 		
 		return mv;
@@ -584,7 +605,7 @@ public class BookController {
 			mv.setViewName("blankMasterPage");
 			mv.addObject("updateError", "Validation failed, please fill form properly");
 			
-			populateBookDetails(mv, book, bookSourceModel, null);
+			populateBookDetails(mv, book, bookSourceModel, null, userModel);
 
 			return mv;	
 		}

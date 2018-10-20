@@ -61,14 +61,14 @@
 		publishedDate = $("#publishedDate");
 		
 		/* references to the read start date */
-		readStartYear = $("#readDeatils\\.startYear");
-		readStartMonth = $("#readDeatils\\.startMonth");
-		readStartDate = $("#readDeatils\\.startDate");
+		readStartYear = $("#readDetails\\.startYear");
+		readStartMonth = $("#readDetails\\.startMonth");
+		readStartDate = $("#readDetails\\.startDate");
 		
 		/* references to the read end date */
-		readEndYear = $("#readDeatils\\.endYear");
-		readEndMonth = $("#readDeatils\\.endMonth");
-		readEndDate = $("#readDeatils\\.endDate");
+		readEndYear = $("#readDetails\\.endYear");
+		readEndMonth = $("#readDetails\\.endMonth");
+		readEndDate = $("#readDetails\\.endDate");
 		
 		//Populate and change the Year
 		populateYears(publishedYear);

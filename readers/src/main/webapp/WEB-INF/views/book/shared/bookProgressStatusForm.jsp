@@ -40,16 +40,24 @@
 
 <div class="form-group">
 	<div class="col-md-offset-${param.colMDOffset} col-md-${param.colMD} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-		<c:if test="${not empty readProgress.readDeatils.id}">
-			<sf:hidden path="readDeatils.id"/>
+		<c:if test="${not empty readProgress.readDetails.id}">
+			<sf:hidden path="readDetails.id"/>
 		</c:if>
-		<sf:select path="${param.pathPrefix}readStatus" class="form-control"
-			onchange="getTheReadStatusForm(this.value)">
-			<sf:option value="">Select read status..</sf:option>
-			<sf:options items="${readProgress.readStatusList}" itemLabel="value"
-				itemValue="id" />
-		</sf:select>
-		<sf:errors path="${param.pathPrefix}readStatus" class="help-block" />
+		
+		<c:choose>
+			<c:when test="${readProgress.readStatus == 3}">
+				<h6 class="text-center">${readStatusValue}</h6>
+			</c:when>
+			<c:when test="${readProgress.readStatus != 3}">
+				<sf:select path="${param.pathPrefix}readStatus" class="form-control"
+					onchange="getTheReadStatusForm(this.value)">
+					<sf:option value="">Select read status..</sf:option>
+					<sf:options items="${readProgress.readStatusList}" itemLabel="value"
+						itemValue="id" />
+				</sf:select>
+				<sf:errors path="${param.pathPrefix}readStatus" class="help-block" />
+			</c:when>
+		</c:choose>
 	</div>
 </div>
 
@@ -63,21 +71,21 @@
 
 	<div class="form-group">
 		<div class="col-md-offset-${param.colMDOffset} col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.startYear" title="Start Year"
+			<sf:select path="readDetails.startYear" title="Start Year"
 				class="form-control"
-				onchange="populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')">
+				onchange="populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')">
 				<sf:option value="">Start Year..</sf:option>
 			</sf:select>
 		</div>
 		<div class="col-md-offset-0 col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.startMonth" title="Start Month"
+			<sf:select path="readDetails.startMonth" title="Start Month"
 				class="form-control"
-				onchange="populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')">
+				onchange="populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')">
 				<sf:option value="">Start Month..</sf:option>
 			</sf:select>
 		</div>
 		<div class="col-md-offset-0 col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.startDate" title="Start Date"
+			<sf:select path="readDetails.startDate" title="Start Date"
 				class="form-control">
 				<sf:option value="">Start Date..</sf:option>
 			</sf:select>
@@ -93,21 +101,21 @@
 
 	<div class="form-group">
 		<div class="col-md-offset-${param.colMDOffset} col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.endYear" title="End Year"
+			<sf:select path="readDetails.endYear" title="End Year"
 				class="form-control"
-				onchange="populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')">
+				onchange="populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')">
 				<sf:option value="">End Year..</sf:option>
 			</sf:select>
 		</div>
 		<div class="col-md-offset-0 col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.endMonth" title="End Month"
+			<sf:select path="readDetails.endMonth" title="End Month"
 				class="form-control"
-				onchange="populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')">
+				onchange="populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')">
 				<sf:option value="">End Month..</sf:option>
 			</sf:select>
 		</div>
 		<div class="col-md-offset-0 col-md-${colMD3rd} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:select path="readDeatils.endDate" title="End Date"
+			<sf:select path="readDetails.endDate" title="End Date"
 				class="form-control">
 				<sf:option value="">End Date..</sf:option>
 			</sf:select>
@@ -116,14 +124,14 @@
 
 	<div class="form-group">
 		<div class="col-md-offset-${param.colMDOffset} col-md-${param.colMD} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:input path="readDeatils.rating" type="number" start="1" end="5"
+			<sf:input path="readDetails.rating" type="number" start="1" end="5"
 				placeholder="Rating" title="Rating" class="form-control" />
 		</div>
 	</div>
 
 	<div class="form-group">
 		<div class="col-md-offset-${param.colMDOffset} col-md-${param.colMD} col-sm-offset-${param.colSMOffset} col-sm-${param.colSM}">
-			<sf:textarea path="readDeatils.review"
+			<sf:textarea path="readDetails.review"
 				placeholder="Short reading experience.." title="Review"
 				class="form-control only-vertical" />
 		</div>
@@ -135,20 +143,20 @@
 <script type="text/javascript">
 
 	$(function(){
-		readStartYear.val(${readProgress.readDeatils.startYear});
-		var readStartMonthSelected = ${readProgress.readDeatils.startMonth}+"";
+		readStartYear.val(${readProgress.readDetails.startYear});
+		var readStartMonthSelected = ${readProgress.readDetails.startMonth}+"";
 		if (readStartMonthSelected != ""){
 			readStartMonth.val(readStartMonthSelected);		
 		}
-		populateDateInDropdown('readDeatils.startYear', 'readDeatils.startMonth', 'readDeatils.startDate')
-		readStartDate.val(${readProgress.readDeatils.startDate});
+		populateDateInDropdown('readDetails.startYear', 'readDetails.startMonth', 'readDetails.startDate')
+		readStartDate.val(${readProgress.readDetails.startDate});
 		
-		readEndYear.val(${readProgress.readDeatils.endYear});
-		var readEndMonthSelected = ${readProgress.readDeatils.endMonth}+"";
+		readEndYear.val(${readProgress.readDetails.endYear});
+		var readEndMonthSelected = ${readProgress.readDetails.endMonth}+"";
 		if (readEndMonthSelected != ""){
-			readEndMonth.val(readEndMonthSelected);		
+			readEndMonth.val(readEndMonthSelected);
 		}
-		populateDateInDropdown('readDeatils.endYear', 'readDeatils.endMonth', 'readDeatils.endDate')
-		readEndDate.val(${readProgress.readDeatils.endDate});
+		populateDateInDropdown('readDetails.endYear', 'readDetails.endMonth', 'readDetails.endDate')
+		readEndDate.val(${readProgress.readDetails.endDate});
 	});
 </script>

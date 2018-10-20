@@ -21,10 +21,15 @@
 	<!-- Heading Row -->
 	<div class="row">
 		<div class="col-sm-4 text-center">
-			<img class="img-responsive img-rounded img-thumbnail"
-				src="${contextRoot.concat(BOOK_COVER_DIR).concat(book.coverPhoto)}"
-				alt="">
-			<br><br>
+			<div class="image-warpper">
+				<img class="img-responsive img-rounded img-thumbnail"
+					src="${contextRoot.concat(BOOK_COVER_DIR).concat(book.coverPhoto)}"
+					alt="">
+			</div>
+			
+			<c:if test="${userModel.userId == book.userId}">
+				<a href="${contextRoot.concat('/book/edit/').concat(book.id)}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></a>
+			</c:if>
 			<c:if test="${not empty book.source and (book.source.type.id == 2 or book.source.type.id == 3)}">
 				<c:choose>
 					<c:when test="${book.source.type.id == 2}">
@@ -37,11 +42,73 @@
 							target="_blank">Read Now</a>
 					</c:when>
 				</c:choose>
-			</c:if>
-			<c:if test="${userModel.userId == book.readerID}">
-				<a href="${contextRoot.concat('/book/edit/').concat(book.id)}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></a>
+				
+				<!-- Share book -->
+				<button type="button" class="btn btn-link" data-toggle="modal" data-target="#bookShareForm">
+					<span class="glyphicon glyphicon-share"></span>
+				</button>
+				<!-- / Share book -->
 			</c:if>
 		</div>
+
+		<c:if test="${not empty book.source and (book.source.type.id == 2 or book.source.type.id == 3)}">
+			<!-- Book Share Model dialog -->
+			<div id="bookShareForm" class="modal fade" role="dialog">
+				<div class="modal-dialog">
+					<!-- Model dialog content -->
+					<div class="modal-content">
+	
+						<!-- Modal header -->
+						<div class="modal-header">
+							<button type="button" class="close" data-dismiss="modal">&times;</button>
+							<h4 class="modal-title">Share</h4>
+						</div>
+						<!-- / Model header -->
+	
+						<!-- Modal body -->
+						<div class="modal-body">
+							<div class="row">
+								<div class="col-sm-12">
+								
+									<sf:form modelAttribute="shareBook" action="${contextRoot}/book/share" method="POST">
+										<div class="form-group">
+											<sf:hidden path="bookId"/>
+											<sf:select path="selectedUsers" id="selectShareUsers" multiple="multiple">
+												<c:forEach items="${shareBook.userNameEmailList}" var="user">
+													<sf:option value="${user.userId}"> ${user.username} (${user.email})</sf:option>
+												</c:forEach>
+											</sf:select>
+										</div>
+										<div class="form-group">
+											<button type="submit" class="btn btn-primary pull-right">Share</button>
+										</div>
+									</sf:form>
+								
+									<script type="text/javascript">
+										$(function(){
+											$(".ms-parent").css({width:"100%"});
+										});
+								        $("#selectShareUsers").multipleSelect({
+								        	selectAll:false,
+								        	placeholder:"Select Reader(s) to share..",
+								            filter: true
+								        });
+								    </script>
+								</div>
+							</div>
+						</div>
+	
+						<!-- Model footer -->
+						<div class="modal-footer">
+							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+						</div>
+					</div>
+					<!-- / Model dialog content -->
+				</div>
+			</div>
+			<!-- / Book Share Model dialog -->
+		</c:if>
+		
 		<!-- /.col-md-8 -->
 		<div class="col-sm-8">
 		
@@ -114,7 +181,7 @@
 							<small><i>Not Specified</i></small>
 						</c:when>
 					</c:choose>
-					<c:if test="${userModel.userId == book.readerID}">
+					<c:if test="${userModel.userId == book.userId}">
 						<button class="btn btn-link btn-xs" data-toggle="modal" data-target="#editBookTypeForm">
 							<span class="glyphicon glyphicon-edit"></span>
 						</button>
@@ -177,8 +244,21 @@
 					<br><br>
 					
 					<strong>Progress Status:</strong><br/>
-					<span>${book.status.value}</span>
-					<c:if test="${not empty book.readDetails}">
+					<c:forEach items="${readProgress.readStatusList}" var="readStatus">
+						<c:if test="${readStatus.id eq readProgress.readStatus}">
+							<c:set var="readStatusValue" value="${readStatus.value}"></c:set>
+						</c:if>
+					</c:forEach>
+					<c:choose>
+						<c:when test="${not empty readStatusValue}">
+							${readStatusValue}
+						</c:when>
+						<c:when test="${empty readStatusValue}">
+							<small><i>Not Specified</i></small>
+						</c:when>
+					</c:choose>
+					
+					<c:if test="${not empty readProgress.readDetails}">
 					
 						<!-- Book Read Progress details -->
 						<button class="btn btn-link btn-xs" data-toggle="modal" data-target="#readProgressDetails">
@@ -197,89 +277,100 @@
 									<!-- / Model header -->
 									
 									<!-- Modal body -->
-									<div class="modal-body">
+									<div class="modal-body text-center">
 										<div class="row">
 											<div class="col-sm-12">
-												<h5 class="text-center">${book.status.value}</h5>
+												<h5>
+													<c:choose>
+														<c:when test="${not empty readStatusValue}">
+															${readStatusValue}
+														</c:when>
+														<c:when test="${empty readStatusValue}">
+															<small><i>Not Specified</i></small>
+														</c:when>
+													</c:choose>
+												</h5>
 												<hr/>
 												
-												<h6 class="text-center">When I started reading?</h6>
-												<div class="row text-center">
+												<h6>When I started reading?</h6>
+												<div class="row">
 													<div class="col-xs-4">
 														<strong>Year</strong><br/>
-														<c:if test="${not empty book.readDetails.startYear}">
-															${book.readDetails.startYear}
+														<c:if test="${not empty readProgress.readDetails.startYear}">
+															${readProgress.readDetails.startYear}
 														</c:if>
-														<c:if test="${empty book.readDetails.startYear}">
-															<small><i>Not Specified</i></small>
+														<c:if test="${empty readProgress.readDetails.startYear}">
+															<small><i>-</i></small>
 														</c:if>
 													</div>
 													<div class="col-xs-4">
 														<strong>Month</strong><br/>
-														<c:if test="${not empty book.readDetails.startMonth}">
-															${book.readDetails.startMonth}
+														<c:if test="${not empty readProgress.readDetails.startMonth}">
+															${readProgress.readDetails.startMonth}
 														</c:if>
-														<c:if test="${empty book.readDetails.startMonth}">
-															<small><i>Not Specified</i></small>
-														</c:if>
-													</div>
-													<div class="col-xs-4">
-														<strong>Date</strong><br/>
-														<c:if test="${not empty book.readDetails.startDate}">
-															${book.readDetails.startDate}
-														</c:if>
-														<c:if test="${empty book.readDetails.startDate}">
-															<small><i>Not Specified</i></small>
-														</c:if>
-													</div>
-												</div>
-												
-												<h6 class="text-center">When I completed reading?</h6>
-												<div class="row text-center">
-													<div class="col-xs-4">
-														<strong>Year</strong><br/>
-														<c:if test="${not empty book.readDetails.endYear}">
-															${book.readDetails.endYear}
-														</c:if>
-														<c:if test="${empty book.readDetails.endYear}">
-															<small><i>Not Specified</i></small>
-														</c:if>
-													</div>
-													<div class="col-xs-4">
-														<strong>Month</strong><br/>
-														<c:if test="${not empty book.readDetails.endMonth}">
-															${book.readDetails.endMonth}
-														</c:if>
-														<c:if test="${empty book.readDetails.endMonth}">
-															<small><i>Not Specified</i></small>
+														<c:if test="${empty readProgress.readDetails.startMonth}">
+															<small><i>-</i></small>
 														</c:if>
 													</div>
 													<div class="col-xs-4">
 														<strong>Date</strong><br/>
-														<c:if test="${not empty book.readDetails.endDate}">
-															${book.readDetails.endDate}
+														<c:if test="${not empty readProgress.readDetails.startDate}">
+															${readProgress.readDetails.startDate}
 														</c:if>
-														<c:if test="${empty book.readDetails.endDate}">
-															<small><i>Not Specified</i></small>
+														<c:if test="${empty readProgress.readDetails.startDate}">
+															<small><i>-</i></small>
 														</c:if>
 													</div>
 												</div>
-												
 												<br/>
+												
+												<h6>When I completed reading?</h6>
+												<div class="row">
+													<div class="col-xs-4">
+														<strong>Year</strong><br/>
+														<c:if test="${not empty readProgress.readDetails.endYear}">
+															${readProgress.readDetails.endYear}
+														</c:if>
+														<c:if test="${empty readProgress.readDetails.endYear}">
+															<small><i>-</i></small>
+														</c:if>
+													</div>
+													<div class="col-xs-4">
+														<strong>Month</strong><br/>
+														<c:if test="${not empty readProgress.readDetails.endMonth}">
+															${readProgress.readDetails.endMonth}
+														</c:if>
+														<c:if test="${empty readProgress.readDetails.endMonth}">
+															<small><i>-</i></small>
+														</c:if>
+													</div>
+													<div class="col-xs-4">
+														<strong>Date</strong><br/>
+														<c:if test="${not empty readProgress.readDetails.endDate}">
+															${readProgress.readDetails.endDate}
+														</c:if>
+														<c:if test="${empty readProgress.readDetails.endDate}">
+															<small><i>-</i></small>
+														</c:if>
+													</div>
+												</div>
+												<br/>
+												
 												<strong>Rating:</strong>
-												<c:if test="${not empty book.readDetails.rating}">
-													${book.readDetails.rating}
+												<br/>
+												<c:if test="${not empty readProgress.readDetails.rating}">
+													${readProgress.readDetails.rating}
 												</c:if>
-												<c:if test="${empty book.readDetails.rating}">
+												<c:if test="${empty readProgress.readDetails.rating}">
 													<small><i>Not Specified</i></small>
 												</c:if>
 												<br/><br/>
 												
 												<strong>Review:</strong><br/>
-												<c:if test="${not empty book.readDetails.review}">
-													${book.readDetails.review}
+												<c:if test="${not empty readProgress.readDetails.review}">
+													${readProgress.readDetails.review}
 												</c:if>
-												<c:if test="${empty book.readDetails.review}">
+												<c:if test="${empty readProgress.readDetails.review}">
 													<small><i>Not Specified</i></small>
 												</c:if>
 											</div>
@@ -297,71 +388,68 @@
 						<!-- / Book Read Progress details -->
 					</c:if>
 					
-					<c:if test="${book.status.id != 3}">
+					<button class="btn btn-link btn-xs" data-toggle="modal" data-target="#editProgressStatusForm">
+						<span class="glyphicon glyphicon-edit"></span>
+					</button>
 					
-						<button class="btn btn-link btn-xs" data-toggle="modal" data-target="#editProgressStatusForm">
-							<span class="glyphicon glyphicon-edit"></span>
-						</button>
-						
-						<div id="editProgressStatusForm" class="modal fade" role="dialog">
-							<div class="modal-dialog">
-								<!-- Model dialog content -->
-								<div class="modal-content">
+					<div id="editProgressStatusForm" class="modal fade" role="dialog">
+						<div class="modal-dialog">
+							<!-- Model dialog content -->
+							<div class="modal-content">
+							
+								<!-- Modal header -->
+								<div class="modal-header">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h4 class="modal-title">Change Progress Status</h4>
+								</div>
+								<!-- / Model header -->
 								
-									<!-- Modal header -->
-									<div class="modal-header">
-										<button type="button" class="close" data-dismiss="modal">&times;</button>
-										<h4 class="modal-title">Change Progress Status</h4>
-									</div>
-									<!-- / Model header -->
-									
-									<!-- Modal body -->
-									<div class="modal-body">
-										<div class="row">
-											<div class="col-sm-12">
-												<sf:form method="POST" action="${contextRoot}/book/edit/readProgress" modelAttribute="readProgress" class="form-horizontal">
-													<jsp:include page="./shared/bookProgressStatusForm.jsp">
-														<jsp:param value="0" name="colMDOffset"/>
-														<jsp:param value="12" name="colMD"/>
-														<jsp:param value="0" name="colSMOffset"/>
-														<jsp:param value="12" name="colSM"/>
-													</jsp:include>
-													
-													<div class="form-group">
-														<div class="col-md-offset-0 col-md-12 col-sm-offset-0 col-sm-12">
-															<c:if test="${empty readProgress or empty readProgress.readDeatils or empty readProgress.readDeatils.id}">
-																<sf:hidden path="readDeatils.id" value="${book.id}"/>
-															</c:if>
-															
-															<button type="submit" class="btn btn-primary pull-right">Update</button>
-														</div>
+								<!-- Modal body -->
+								<div class="modal-body">
+									<div class="row">
+										<div class="col-sm-12">
+											<sf:form method="POST" action="${contextRoot}/book/edit/readProgress" modelAttribute="readProgress" class="form-horizontal">
+												<jsp:include page="./shared/bookProgressStatusForm.jsp">
+													<jsp:param value="0" name="colMDOffset"/>
+													<jsp:param value="12" name="colMD"/>
+													<jsp:param value="0" name="colSMOffset"/>
+													<jsp:param value="12" name="colSM"/>
+												</jsp:include>
+												
+												<div class="form-group">
+													<div class="col-md-offset-0 col-md-12 col-sm-offset-0 col-sm-12">
+														<c:if test="${empty readProgress or empty readProgress.readDetails or empty readProgress.readDetails.id}">
+															<sf:hidden path="readDetails.id" value="${book.id}"/>
+														</c:if>
+														
+														<button type="submit" class="btn btn-primary pull-right">Update</button>
 													</div>
-												</sf:form>
-											</div>
+												</div>
+											</sf:form>
 										</div>
 									</div>
-									
-									<!-- Model footer -->
-									<div class="modal-footer">
-										<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-									</div>
 								</div>
-								<!-- / Model dialog content -->
+								
+								<!-- Model footer -->
+								<div class="modal-footer">
+									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+								</div>
 							</div>
+							<!-- / Model dialog content -->
 						</div>
-	
-						<c:if test="${not empty progressUpdateError}">
-							<script type="text/javascript">
-								$(function() {
-									$("#editProgressStatusForm").modal('show');
-								});
-							</script>
-						</c:if>
+					</div>
+
+					<c:if test="${not empty progressUpdateError}">
+						<script type="text/javascript">
+							$(function() {
+								$("#editProgressStatusForm").modal('show');
+							});
+						</script>
 					</c:if>
-					<br/><br/>
+					<%-- <br/><br/>
 					
 					<strong>Added:</strong><br/>
-					<span><fmt:formatDate value="${book.creationTime}"/></span>
+					<span><fmt:formatDate value="${book.creationTime}"/></span> --%>
 					
 				</div>
 			</div>

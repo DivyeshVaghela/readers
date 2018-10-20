@@ -62,7 +62,7 @@ public class BookDAOTestCase {
 		List<Book> list = bookDAO.list(2);
 		for (Book book : list) {
 			System.out.println(book);
-			System.out.println(book.getReaderID());
+			//System.out.println(book.getReaderID());
 		}
 		assertEquals("List got successfully", 1, list.size());
 	}
@@ -73,12 +73,12 @@ public class BookDAOTestCase {
 		Book book = new Book();
 		
 		book.setName("Testing");
-		book.setEdition("1st");
+		/*book.setEdition("1st");
 		book.setDetails("This is just for testing purpose");
 		book.setReader(userDAO.findByUsername("shankar"));
 		book.setPublication(publicationDAO.findByName("Wiley India"));
 		book.setStatus(readStatusDAO.findByName("Want to read"));
-		
+		*/
 		Integer newBookId = bookDAO.create(book);
 		assertEquals("created successfully", (Integer)2, newBookId);
 	}
@@ -87,13 +87,13 @@ public class BookDAOTestCase {
 	public void createBookWithAuthor() {
 		
 		Book book = new Book();
-		book.setName("Testing");
+		/*book.setName("Testing");
 		book.setEdition("1st");
 		book.setDetails("This is just for testing purpose");
 		book.setReader(userDAO.findByUsername("shankar"));
 		book.setPublication(publicationDAO.findByName("Wiley India"));
 		book.setStatus(readStatusDAO.findByName("Want to read"));
-		
+		*/
 		book.getAuthors().addAll(authorDAO.findByField("firstName", "Peter"));		
 		
 		Integer newBookId = bookDAO.create(book);
@@ -104,13 +104,13 @@ public class BookDAOTestCase {
 	public void createBookWithNewAuthor() {
 		
 		Book book = new Book();
-		book.setName("Testing");
+		/*book.setName("Testing");
 		book.setEdition("1st");
 		book.setDetails("This is just for testing purpose");
 		book.setReader(userDAO.findByUsername("shankar"));
 		book.setPublication(publicationDAO.findByName("Wiley India"));
 		book.setStatus(readStatusDAO.findByName("Want to read"));
-		
+		*/
 		Author author = new Author();
 		author.setFirstName("Gagan");
 		author.setLastName("Mehta");
@@ -126,13 +126,13 @@ public class BookDAOTestCase {
 	public void createBookWithSource() {
 		
 		Book book = new Book();
-		book.setName("Testing");
+		/*book.setName("Testing");
 		book.setEdition("1st");
 		book.setDetails("This is just for testing purpose");
 		book.setReader(userDAO.findByUsername("shankar"));
 		book.setPublication(publicationDAO.findByName("Wiley India"));
 		book.setStatus(readStatusDAO.findByName("Want to read"));
-		
+		*/
 		BookSource bookSource = new BookSource();
 		bookSource.setType(bookTypeDAO.findByValue("Physical Copy"));
 		bookSource.setValue("In my desk at home");
@@ -148,7 +148,7 @@ public class BookDAOTestCase {
 	public void createBookWithReadDetails() {
 		
 		Book book = new Book();
-		book.setName("Testing");
+		/*book.setName("Testing");
 		book.setEdition("1st");
 		book.setDetails("This is just for testing purpose");
 		book.setReader(userDAO.findByUsername("shankar"));
@@ -161,15 +161,15 @@ public class BookDAOTestCase {
 		readDetail.setBook(book);
 		
 		book.setReadDetails(readDetail);
-		
+		*/
 		Integer newBookId = bookDAO.create(book);
 		assertEquals("created successfully", (Integer)8, newBookId);
 	}
 	
-	@Test
+	//@Test
 	public void listBookOverview() {
 		
-		List<BookOverviewModel> list = bookDAO.list(2, null, null, 0, 10);
+		List<BookOverviewModel> list = bookDAO.list(null, null, 0, 10);
 		assertEquals("List got successfully", 7, list.size());
 	}
 	
@@ -190,9 +190,18 @@ public class BookDAOTestCase {
 		System.out.println(book.getPublication());
 		System.out.println(book.getSource().getType());
 		System.out.println(book.getSource());
-		System.out.println(book.getReadDetails());
+		//System.out.println(book.getReadDetails());
 		book.getAuthors().forEach(System.out::println);
 		assertEquals("Successfully got", (Integer)14, book.getId());
 	}
 	
+	@Test
+	public void getWishList() {
+		
+		List<BookOverviewModel> wishList = bookDAO.list(2, 1, null, null, 0, 0);
+		wishList.forEach(bookOverviewModel -> {
+			System.out.println(bookOverviewModel.getFullName());
+		});
+		assertEquals("Done", 2, wishList.size());
+	}
 }

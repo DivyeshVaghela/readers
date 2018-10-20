@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
@@ -74,14 +75,14 @@ public class Book {
 
 	@ManyToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinColumn(name="user_id")
-	private User reader;
+	private User user;
 	
 	@Column(name="user_id", insertable=false, updatable=false)
-	private Integer readerID;
+	private Integer userId;
 	
-	@ManyToOne(fetch=FetchType.LAZY)
+	/*@ManyToOne(fetch=FetchType.LAZY)
 	@JoinColumn(name="status_id")
-	private ReadStatus status;
+	private ReadStatus status;*/
 	
 	@ManyToMany(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
 	@JoinTable(name="book_author", 
@@ -92,9 +93,20 @@ public class Book {
 	@OneToOne(mappedBy="book", cascade=CascadeType.ALL)
 	private BookSource source;
 	
-	@OneToOne(mappedBy="book", cascade=CascadeType.ALL)
-	private ReadDetail readDetails;
+	/*@OneToOne(mappedBy="book", cascade=CascadeType.ALL)
+	private ReadDetail readDetails;*/
 	
+	@OneToMany(mappedBy="book", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<BookUser> bookReaders = new ArrayList<>();
+
+	public List<BookUser> getBookReaders() {
+		return bookReaders;
+	}
+
+	public void setBookReaders(List<BookUser> bookReaders) {
+		this.bookReaders = bookReaders;
+	}
+
 	public Book() {}
 	
 	public Integer getId() {
@@ -195,21 +207,21 @@ public class Book {
 		this.publication = publication;
 	}
 
-	public User getReader() {
-		return reader;
+	public User getUser() {
+		return user;
 	}
 
-	public void setReader(User reader) {
-		this.reader = reader;
+	public void setUser(User user) {
+		this.user = user;
 	}
 
-	public ReadStatus getStatus() {
+	/*public ReadStatus getStatus() {
 		return status;
 	}
 
 	public void setStatus(ReadStatus status) {
 		this.status = status;
-	}
+	}*/
 
 	public List<Author> getAuthors() {
 		return authors;
@@ -219,12 +231,12 @@ public class Book {
 		this.authors = authors;
 	}
 
-	public Integer getReaderID() {
-		return readerID;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setReaderID(Integer readerID) {
-		this.readerID = readerID;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
 	public Integer getPublicationId() {
@@ -243,13 +255,13 @@ public class Book {
 		this.source = source;
 	}
 	
-	public ReadDetail getReadDetails() {
+	/*public ReadDetail getReadDetails() {
 		return readDetails;
 	}
 
 	public void setReadDetails(ReadDetail readDetails) {
 		this.readDetails = readDetails;
-	}
+	}*/
 
 	public String getCoverPhoto() {
 		return coverPhoto;

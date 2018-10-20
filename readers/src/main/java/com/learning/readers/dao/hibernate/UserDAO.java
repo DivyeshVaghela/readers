@@ -1,9 +1,11 @@
 package com.learning.readers.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Repository;
 
 import com.learning.readers.dao.IUserDAO;
 import com.learning.readers.entity.User;
+import com.learning.readers.model.UserNameEmailModel;
 
 @Repository
 public class UserDAO implements IUserDAO {
@@ -29,6 +32,37 @@ public class UserDAO implements IUserDAO {
 		List<User> userList = hibernateTemplate.loadAll(User.class);
 		return userList;
 	}
+
+	@Override
+	public List<UserNameEmailModel> listNameEmail(Integer exceptUserId) {
+		
+		return hibernateTemplate.execute(session -> {
+			
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<UserNameEmailModel> criteriaQuery = criteriaBuilder.createQuery(UserNameEmailModel.class);
+			
+			Root<User> userRoot = criteriaQuery.from(User.class);
+			criteriaQuery
+				.select(criteriaBuilder.construct(UserNameEmailModel.class,
+						userRoot.<Integer>get("id"),
+						userRoot.<String>get("username"),
+						userRoot.<String>get("email")));
+			
+			List<Predicate> predicates = new ArrayList<>();
+			predicates.add(criteriaBuilder.equal(userRoot.<Boolean>get("enabled"), true));
+			
+			if (exceptUserId != null && exceptUserId != 0) {
+				predicates.add(criteriaBuilder.notEqual(userRoot.<Integer>get("id"), exceptUserId));
+			}
+			
+			criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[] {})));
+				
+			return session.createQuery(criteriaQuery).list();
+		});
+	}
+
+
+
 
 	@Override
 	public User findByUsername(String username) {
@@ -105,7 +139,8 @@ public class UserDAO implements IUserDAO {
 
 	@Override
 	public User findById(int userId) {
-		return hibernateTemplate.load(User.class, userId);
+		return hibernateTemplate.get(User.class, userId);
+		//return hibernateTemplate.load(User.class, userId);
 	}
 
 	

@@ -18,11 +18,11 @@
 			id="bs-example-navbar-collapse-1">
 
 			<security:authorize access="isAuthenticated()">
-				<ul class="nav navbar-nav">
+				<!-- <ul class="nav navbar-nav">
 					<li><a href="#">About</a></li>
 					<li><a href="#">Services</a></li>
 					<li><a href="#">Contact</a></li>
-				</ul>
+				</ul> -->
 			</security:authorize>
 
 

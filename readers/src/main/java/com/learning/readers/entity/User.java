@@ -50,8 +50,17 @@ public class User {
 			inverseJoinColumns = {@JoinColumn(name="role_id", referencedColumnName="id")})
 	private Set<Role> roles = new HashSet<>();;
 
-	@OneToMany(mappedBy="reader", fetch=FetchType.LAZY)
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY)
 	private List<Book> books = new ArrayList<>();
+	
+	@OneToMany(mappedBy="user", fetch=FetchType.LAZY, cascade=CascadeType.ALL)
+	private List<BookUser> bookUsers = new ArrayList<>();
+	
+	@OneToMany(mappedBy="sender", fetch=FetchType.LAZY)
+	private List<BookShare> sharedByMeBooks = new ArrayList<>();
+	
+	@OneToMany(mappedBy="receiver", fetch=FetchType.LAZY)
+	private List<BookShare> sharedToMeBooks = new ArrayList<>();
 	
 	public User() { }
 

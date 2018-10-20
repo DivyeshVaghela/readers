@@ -8,7 +8,7 @@ public class CreateReadProgressModel {
 	private Integer readStatus;
 	private List<ReadStatusValueModel> readStatusList = new ArrayList<>();
 	
-	private CreateReadDetailsModel readDeatils;
+	private CreateReadDetailsModel readDetails;
 
 	public Integer getReadStatus() {
 		return readStatus;
@@ -26,12 +26,12 @@ public class CreateReadProgressModel {
 		this.readStatusList = readStatusList;
 	}
 
-	public CreateReadDetailsModel getReadDeatils() {
-		return readDeatils;
+	public CreateReadDetailsModel getReadDetails() {
+		return readDetails;
 	}
 
-	public void setReadDeatils(CreateReadDetailsModel readDeatils) {
-		this.readDeatils = readDeatils;
+	public void setReadDetails(CreateReadDetailsModel readDetails) {
+		this.readDetails = readDetails;
 	}
 	
 	

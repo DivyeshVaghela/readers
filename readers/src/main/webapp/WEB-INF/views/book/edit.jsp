@@ -6,7 +6,10 @@
 
 <div>
 
-	<h2 class="text-center">Edit Book</h2>
+	<h2 class="text-center">
+		Edit Book<br/>
+		<small>${book.basicDetails.fullName}</small>
+	</h2>
 	<hr />
 
 	<c:if test="${not empty bookUpdateError}">

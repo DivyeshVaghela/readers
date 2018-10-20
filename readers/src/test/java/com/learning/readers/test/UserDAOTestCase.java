@@ -14,6 +14,7 @@ import com.learning.readers.dao.hibernate.RoleDAO;
 import com.learning.readers.dao.hibernate.UserDAO;
 import com.learning.readers.entity.Role;
 import com.learning.readers.entity.User;
+import com.learning.readers.model.UserNameEmailModel;
 
 public class UserDAOTestCase {
 
@@ -90,9 +91,26 @@ public class UserDAOTestCase {
 		assertEquals("User found successfully", "ganesh@gmail.com", userDAO.findByEmail("ganesh@gmail.com").getEmail());
 	}
 	
-	@Test
+	//@Test
 	public void usernameExists() {
 		
 		assertEquals("Done", false, userDAO.exists("username", "ganesha"));
+	}
+	
+	//@Test
+	public void findById() {
+		
+		User user = userDAO.findById(2);
+		System.out.println(user);
+		assertEquals("Done", (Integer)2, user.getId());
+		
+	}
+	
+	@Test
+	public void listUserNameEmail() {
+		
+		List<UserNameEmailModel> list = userDAO.listNameEmail(2);
+		list.forEach(System.out::println);
+		assertEquals("Successfully got", 5, list.size());
 	}
 }
