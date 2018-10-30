@@ -62,6 +62,20 @@
 			$(".nav-tabs a").click(function(){
 		        $(this).tab('show');
 		    });
+			
+			$(".ms-parent").each(function(index, element){
+				$(element).css({
+					width : "100%"
+				})
+				.children("button:first").css({
+					height: "40px"
+				})
+				.children().each(function(index, element){
+					$(element).css({
+						"margin-top":"6px"
+					});
+				});
+			});
 		});
 	</script>
 

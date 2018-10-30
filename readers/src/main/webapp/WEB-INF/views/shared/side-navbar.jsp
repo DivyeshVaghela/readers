@@ -41,13 +41,28 @@
 			<div class="panel inner">
 				<div class="panel-heading inner">
 					<a data-toggle="collapse" href="#subMenu_share" id="subMenuLink_share" class="list-group-item accordion-toggle collapsed">
-						<span class="glyphicon glyphicon-share"></span> Shared
+						<span class="glyphicon glyphicon-transfer"></span> Shared
 					</a>
 				</div>
 				<div id="subMenu_share" class="panel-collapse collapse">
 					<div class="list-group inner">
 						<a href="${contextRoot}/shared" id="sideNav_shared" class="list-group-item">To Me</a>
 						<a href="${contextRoot}/shared/history" id="sideNav_sharedHistory" class="list-group-item">History</a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="panel inner">
+				<div class="panel-heading inner">
+					<a data-toggle="collapse" href="#subMenu_groups" id="subMenuLink_groups" class="list-group-item accordion-toggle collapsed">
+						<span class="glyphicon glyphicon-tent"></span> Groups
+					</a>
+				</div>
+				<div id="subMenu_groups" class="panel-collapse collapse">
+					<div class="list-group inner">
+						<a href="${contextRoot}/group" id="sideNav_groups" class="list-group-item">Groups</a>
+						<a href="${contextRoot}/group/my" id="sideNav_myGroup" class="list-group-item">My Groups</a>
+						<a href="${contextRoot}/group/create" id="sideNav_create" class="list-group-item">Create</a>
 					</div>
 				</div>
 			</div>

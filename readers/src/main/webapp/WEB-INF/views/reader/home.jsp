@@ -15,7 +15,6 @@
 	<div class="col-md-9">
 
 		<!-- Main Content -->
-
 		<c:if test="${not empty model.resentlyAdded or fn:length(model.resentlyAdded) ne 0}">
 		
 			<h2>Recently added</h2>

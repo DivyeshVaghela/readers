@@ -54,15 +54,13 @@ public class UserDAO implements IUserDAO {
 			if (exceptUserId != null && exceptUserId != 0) {
 				predicates.add(criteriaBuilder.notEqual(userRoot.<Integer>get("id"), exceptUserId));
 			}
-			
 			criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[] {})));
 				
+			criteriaQuery.orderBy(criteriaBuilder.asc(userRoot.<String>get("email")));
+			
 			return session.createQuery(criteriaQuery).list();
 		});
 	}
-
-
-
 
 	@Override
 	public User findByUsername(String username) {

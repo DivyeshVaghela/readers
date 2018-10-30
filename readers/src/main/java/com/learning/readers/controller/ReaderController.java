@@ -27,7 +27,7 @@ public class ReaderController {
 	IBookDAO bookDAO;
 	@Autowired
 	IBookShareDAO bookShareDAO;
-
+	
 	@RequestMapping(value = {"", "/", "/home", "/index"})
 	public ModelAndView home(HttpSession httpSession) {
 		

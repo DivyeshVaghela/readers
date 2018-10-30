@@ -23,6 +23,7 @@ import com.learning.readers.entity.Book;
 import com.learning.readers.entity.BookUser;
 import com.learning.readers.entity.ReadStatus;
 import com.learning.readers.entity.User;
+import com.learning.readers.model.BookNameEditionModel;
 import com.learning.readers.model.BookOverviewModel;
 import com.learning.readers.util.FieldNameValue;
 import com.learning.readers.util.SortOrder;
@@ -57,7 +58,9 @@ public class BookDAO implements IBookDAO {
 
 				Root<Book> bookRoot = criteriaQuery.from(Book.class);
 				criteriaQuery.select(bookRoot)
-						.where(criteriaBuilder.equal(bookRoot.<User>get("reader").<Integer>get("id"), userId));
+						.where(criteriaBuilder.and(
+								criteriaBuilder.equal(bookRoot.<User>get("user").<Integer>get("id"), userId),
+								criteriaBuilder.equal(bookRoot.<Boolean>get("enabled"), true)));
 
 				return session.createQuery(criteriaQuery).list();
 			}
@@ -108,6 +111,47 @@ public class BookDAO implements IBookDAO {
 		});
 	}
 
+	@Override
+	public List<BookNameEditionModel> listMyBooksNameEdition(int userId, String orderByField, SortOrder sortOrder, Integer firstResult, Integer limit){
+		
+		return hibernateTemplate.execute(new HibernateCallback<List<BookNameEditionModel>>() {
+
+			@Override
+			public List<BookNameEditionModel> doInHibernate(Session session) throws HibernateException {
+				
+				CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+				CriteriaQuery<BookNameEditionModel> criteriaQuery = criteriaBuilder.createQuery(BookNameEditionModel.class);
+				
+				Root<Book> bookRoot = criteriaQuery.from(Book.class);
+				criteriaQuery
+					.select(criteriaBuilder.construct(BookNameEditionModel.class, 
+						bookRoot.<Integer>get("id"),
+						bookRoot.<String>get("name"),
+						bookRoot.<String>get("edition")))
+					.where(criteriaBuilder.and(
+							criteriaBuilder.equal(bookRoot.<User>get("user").<Integer>get("id"), userId),
+							criteriaBuilder.equal(bookRoot.<Boolean>get("enabled"), true)
+						));
+				
+				if (orderByField != null) {
+					if (sortOrder == SortOrder.ASC) {
+						criteriaQuery.orderBy(criteriaBuilder.asc(bookRoot.get(orderByField)));
+					} else if (sortOrder == SortOrder.DESC) {
+						criteriaQuery.orderBy(criteriaBuilder.desc(bookRoot.get(orderByField)));
+					}
+				}
+
+				Query<BookNameEditionModel> query = session.createQuery(criteriaQuery);
+				if (firstResult != null)
+					query.setFirstResult(firstResult);
+				if (limit != null && limit != 0)
+					query.setMaxResults(limit);
+				
+				return query.list();
+			}
+		});
+	}
+	
 	/*@Override
 	public List<BookOverviewModel> getWishList(int userId, String orderByField, SortOrder sortOrder, int firstResult, int limit){
 		
@@ -213,7 +257,8 @@ public class BookDAO implements IBookDAO {
 
 				Book book = session.createQuery(criteriaQuery).uniqueResult();
 
-				for (Author author : book.getAuthors());
+				if (book != null)
+					for (Author author : book.getAuthors());
 
 				return book;
 			}

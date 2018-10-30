@@ -17,8 +17,6 @@ import com.learning.readers.dao.IUserDAO;
 import com.learning.readers.entity.Author;
 import com.learning.readers.entity.Book;
 import com.learning.readers.entity.BookSource;
-import com.learning.readers.entity.ReadDetail;
-import com.learning.readers.model.BookDetailsModel;
 import com.learning.readers.model.BookOverviewModel;
 
 public class BookDAOTestCase {
@@ -56,7 +54,7 @@ public class BookDAOTestCase {
 		assertEquals("List got successfully.", 1, list.size());
 	}
 	
-	//@Test
+	@Test
 	public void listAllBookByUser() {
 		
 		List<Book> list = bookDAO.list(2);
@@ -64,7 +62,7 @@ public class BookDAOTestCase {
 			System.out.println(book);
 			//System.out.println(book.getReaderID());
 		}
-		assertEquals("List got successfully", 1, list.size());
+		assertEquals("List got successfully", 8, list.size());
 	}
 	
 	//@Test
@@ -195,7 +193,7 @@ public class BookDAOTestCase {
 		assertEquals("Successfully got", (Integer)14, book.getId());
 	}
 	
-	@Test
+	//@Test
 	public void getWishList() {
 		
 		List<BookOverviewModel> wishList = bookDAO.list(2, 1, null, null, 0, 0);

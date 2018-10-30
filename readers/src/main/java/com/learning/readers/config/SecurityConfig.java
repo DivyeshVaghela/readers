@@ -9,7 +9,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.learning.readers.service.CustomUserDetailsService;
 
@@ -78,27 +77,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.and()
 				.exceptionHandling()
 					.accessDeniedPage("/access-denied");
-			
-				
-			/*.antMatchers("/secured/**")
-				.authenticated()
-			.antMatchers("/reader/**")
-				.hasAuthority("READER")
-			.antMatchers("/assets/**")
-				.permitAll()
-			.anyRequest()
-				.permitAll()
-			.and()
-			.formLogin()
-				.loginPage("/login")
-				.permitAll()
-			.and()
-			.logout()
-				.logoutUrl("/logout")
-				.permitAll()
-			.and();
-			.exceptionHandling()
-				.accessDeniedPage("/access-denied");*/
 	}
 
 	/*private PasswordEncoder getPasswordEncoder() {

@@ -13,6 +13,7 @@
 <spring:eval var="APP_NAME" expression="T(com.learning.readers.util.ConstantUtil).APP_NAME" scope="request" />
 <spring:eval var="BOOK_COVER_DIR" expression="T(com.learning.readers.util.ConstantUtil).BOOK_COVER_DIR" scope="request" />
 <spring:eval var="BOOK_DEFAULT_COVER" expression="T(com.learning.readers.util.ConstantUtil).BOOK_DEFAULT_COVER" scope="request" />
+<spring:eval var="BOOK_PER_CAROUSEL_SCREEN" expression="T(com.learning.readers.util.ConstantUtil).BOOK_PER_CAROUSEL_SCREEN" scope="request" />
 <!-- /CONSTANTS -->
 
 <meta charset="utf-8">

@@ -35,12 +35,20 @@ public class BookShareController {
 	
 	@RequestMapping(value="/shared/{bookShareId}", method = RequestMethod.GET)
 	public ModelAndView sharedBookDetails(@PathVariable("bookShareId")int bookShareId,
+			RedirectAttributes redirectAttributes,
 			HttpSession httpSession) {
 		
 		ModelAndView mv = new ModelAndView("blankMasterPage");
 		
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 		BookShare bookShare = bookShareDAO.findById(bookShareId, userModel.getUserId());
+		
+		if (bookShare == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "The resource you are trying to find is not present, please check your request.");
+			mv.setViewName("redirect:/");
+			return mv;
+		}
+		
 		mv.addObject("bookShare", bookShare);
 
 		mv.addObject("contentPagePath", "./book/bookShareDetails.jsp");
@@ -103,9 +111,14 @@ public class BookShareController {
 		ModelAndView mv = new ModelAndView();
 		
 		UserModel userModel = (UserModel)session.getAttribute("userModel");
-		bookShareDAO.takeShareAction(shareAction.getBookShareId(), shareAction.getShareActionId());
-
-		redirectAttributes.addFlashAttribute("successMessage", "Action taken successfully.");
+		
+		try {
+			bookShareDAO.takeShareAction(shareAction.getBookShareId(), shareAction.getShareActionId());
+			redirectAttributes.addFlashAttribute("successMessage", "Action taken successfully.");
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while taking action, please try again.");
+		}
 		mv.setViewName("redirect:/book/shared/"+shareAction.getBookShareId());
 		return mv;
 	}

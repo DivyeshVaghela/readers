@@ -91,7 +91,9 @@
 								        $("#selectShareUsers").multipleSelect({
 								        	selectAll:false,
 								        	placeholder:"Select Reader(s) to share..",
-								            filter: true
+								            filter: true,
+											minimumCountSelected: 0,
+											countSelected: "# selected"
 								        });
 								    </script>
 								</div>

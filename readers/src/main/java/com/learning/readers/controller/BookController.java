@@ -22,7 +22,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.learning.readers.dao.IAuthorDAO;
 import com.learning.readers.dao.IBookDAO;
-import com.learning.readers.dao.IBookShareDAO;
 import com.learning.readers.dao.IBookSourceDAO;
 import com.learning.readers.dao.IBookTypeDAO;
 import com.learning.readers.dao.IPublicationDAO;
@@ -30,7 +29,6 @@ import com.learning.readers.dao.IReadStatusDAO;
 import com.learning.readers.dao.IUserDAO;
 import com.learning.readers.entity.Author;
 import com.learning.readers.entity.Book;
-import com.learning.readers.entity.BookShare;
 import com.learning.readers.entity.BookSource;
 import com.learning.readers.entity.BookUser;
 import com.learning.readers.entity.Publication;
@@ -149,12 +147,18 @@ public class BookController {
 	
 	@RequestMapping(value = {"/{bookId}"})
 	public ModelAndView bookDetails(@PathVariable("bookId")int bookId,
-			HttpSession httpSession) {
+			HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		
 		ModelAndView mv = new ModelAndView("blankMasterPage");
 
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 		Book book = bookDAO.findById(bookId, userModel.getUserId(), true);
+		
+		if (book == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "The resource you are trying to find is not present, please check your request.");
+			mv.setViewName("redirect:/");
+			return mv;
+		}
 		
 		populateBookDetails(mv, book, null, null, userModel);
 		
@@ -334,24 +338,29 @@ public class BookController {
 			redirectAttributes.addFlashAttribute("successMessage", "New book added successfully.");
 			mv.setViewName("redirect:/");
 		} catch (Exception exp) {
+			exp.printStackTrace();
 			mv.addObject("errorMessage", "There was some problem in adding new book, please try again.");mv.setViewName("blankMasterPage");
 			mv.addObject("contentPagePath", "./book/create.jsp");
 			
 			populateCreateBookModel(mv, model);
-			exp.printStackTrace();
 		}
 		
 		return mv;
 	}
 	
 	@RequestMapping(value = {"/edit/{bookId}"})
-	public ModelAndView edit(@PathVariable("bookId")int bookId, HttpSession httpSession) {
+	public ModelAndView edit(@PathVariable("bookId")int bookId, HttpSession httpSession, RedirectAttributes redirectAttributes) {
 		
 		ModelAndView mv = new ModelAndView("blankMasterPage");
-		mv.addObject("contentPagePath", "./book/edit.jsp");
 
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 		Book book = bookDAO.findById(bookId, userModel.getUserId(), true);
+		
+		if (book == null) {
+			redirectAttributes.addFlashAttribute("errorMessage", "The resource you are trying to find is not present, please check your request.");
+			mv.setViewName("redirect:/");
+			return mv;
+		}
 		
 		CreateBookModel model = new CreateBookModel();
 		model.setId(book.getId());
@@ -387,6 +396,7 @@ public class BookController {
 		mv.addObject("book", model);
 		mv.addObject("pageTitle", "Edit" + book.getFullName());
 		
+		mv.addObject("contentPagePath", "./book/edit.jsp");
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
 		breadcrumbItems.put("Book", "/book");
@@ -512,15 +522,14 @@ public class BookController {
 			mv.setViewName("redirect:/book/"+book.getId());
 			
 		} catch (Exception exp) {
+			exp.printStackTrace();
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem in updating book details, please try again.");
 			mv.setViewName("redirect:/book/"+book.getId());
-			exp.printStackTrace();
 		}
 		
 		return mv;
 	}
-	
-	
+		
 	@RequestMapping(value = "/edit/readProgress", method = RequestMethod.POST)
 	public ModelAndView updateReadProgress(@Valid @ModelAttribute("readProgress") CreateReadProgressModel readProgressModel,
 			BindingResult bindingResult, 
@@ -582,9 +591,14 @@ public class BookController {
 			//book.setReadDetails(readDetail);
 		}
 
-		bookDAO.update(book);
+		try {
+			bookDAO.update(book);
+			redirectAttributes.addFlashAttribute("successMessage", "Book reading progress details updated successfully.");
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "There was some problme while updating Book reading progress details, please try again.");
+		}
 		mv.setViewName("redirect:/book/"+readProgressModel.getReadDetails().getId());
-		redirectAttributes.addFlashAttribute("successMessage", "Book reading progress details updated successfully.");
 		
 		return mv;
 	}
@@ -624,10 +638,15 @@ public class BookController {
 		bookSource.setType(bookTypeDAO.findById(bookSourceModel.getBookTypeId()));
 		bookSource.setValue(bookSourceModel.getValue());
 		bookSource.setBook(book);
-		
-		bookSourceDAO.saveOrUpdate(bookSource);
+
+		try {
+			bookSourceDAO.saveOrUpdate(bookSource);
+			redirectAttributes.addFlashAttribute("successMessage", "Book source details updated successfully.");
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "There was some problme while updating Book source details, please try again.");
+		}
 		mv.setViewName("redirect:/book/"+bookSourceModel.getId());
-		redirectAttributes.addFlashAttribute("successMessage", "Book source details updated successfully.");
 		
 		return mv;
 	}

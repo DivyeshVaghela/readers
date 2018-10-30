@@ -100,6 +100,16 @@ public class SecurityController {
 				exceptionCapsule.setTitle("Not Found");
 				exceptionCapsule.setMessage("The page or resource you requested is not available.");
 				break;
+				
+			case 500:
+				exceptionCapsule.setTitle("Server Problem");
+				exceptionCapsule.setMessage("There was some problem while proccessing your request, please check your request properly and try again.");
+				break;
+				
+			default:
+				exceptionCapsule.setTitle("Request processing problem");
+				exceptionCapsule.setMessage("There was some problem while proccessing your request, please check your request properly and try again.");
+				break;
 		}
 		
 		mv.addObject("pageTitle", errorCode);
