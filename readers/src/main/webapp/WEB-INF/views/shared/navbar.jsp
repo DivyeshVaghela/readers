@@ -11,7 +11,10 @@
 					class="icon-bar"></span> <span class="icon-bar"></span> <span
 					class="icon-bar"></span>
 			</button>
-			<a class="navbar-brand" href="${contextRoot}">Readers'</a>
+			<a class="navbar-brand" href="${contextRoot}">
+				<img src="${image}/open-book.png" style="height:30px; width:50px; float:left; margin-right:10px;" class="img-responsive">
+				Readers'
+			</a>
 		</div>
 		<!-- Collect the nav links, forms, and other content for toggling -->
 		<div class="collapse navbar-collapse"
@@ -41,6 +44,11 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
+							<li>
+								<a href="${contextRoot}/change-password"> 
+									<span class="glyphicon glyphicon-lock"></span> Change Password
+								</a>
+							</li>
 							<li><a href="javascript:void(0)" onclick="performLogout()">
 								<span class="glyphicon glyphicon-log-out" id="navMenu_logout"></span> Logout</a>
 		

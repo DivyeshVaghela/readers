@@ -55,6 +55,7 @@ public class ReaderGroupController {
 		
 		List<ReaderGroupOverviewModel> groups = readerGroupDAO.createdByMe(userModel.getUserId(), "creationTime", SortOrder.DESC);
 		mv.addObject("readerGroups", groups);
+		mv.addObject("group", "My");
 	
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
@@ -213,7 +214,7 @@ public class ReaderGroupController {
 			HttpSession httpSession) {
 		
 		ModelAndView mv = new ModelAndView();
-		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
+		//UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 
 		mv.setViewName("blankMasterPage");
 	
@@ -263,19 +264,19 @@ public class ReaderGroupController {
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while validating the form, please try again.");
 			populateGroupDetails(mv, groupId, userModel, null, readerGroupModel, redirectAttributes);
 			
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 			return mv;
 		}
 		
 		try {
 			readerGroupDAO.updateBooks(readerGroupModel.getId(), readerGroupModel.getSelectedBookId());
 			redirectAttributes.addFlashAttribute("successMessage", "Group books updated successfully.");
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 			
 		} catch (Exception exp) {
 			exp.printStackTrace();
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while updating the group books, please try again.");
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 		}
 		
 		return mv;
@@ -295,19 +296,19 @@ public class ReaderGroupController {
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while validating the form, please try again.");
 			populateGroupDetails(mv, groupId, userModel, null, readerGroupModel, redirectAttributes);
 			
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 			return mv;
 		}
 		
 		try {
 			readerGroupDAO.updateMembers(readerGroupModel.getId(), readerGroupModel.getSelectedMemberdId());
 			redirectAttributes.addFlashAttribute("successMessage", "Group members updated successfully.");
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 			
 		} catch (Exception exp) {
 			exp.printStackTrace();
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while updating the group members, please try again.");
-			mv.setViewName("redirect:/group/"+groupId);
+			mv.setViewName("redirect:/group/my/"+groupId);
 		}
 		
 		return mv;

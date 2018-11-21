@@ -21,4 +21,14 @@ public class GeneralUtil {
 		Object fieldValue = field.get(object);
 		return (T)fieldValue;
 	}
+	
+	public static boolean isNullOrEmpty(String testString) {
+		return testString == null || testString.isEmpty();
+	}
+	
+	public static String nullOrString(String testString) {
+		if (isNullOrEmpty(testString))
+			return null;
+		return testString;
+	}
 }

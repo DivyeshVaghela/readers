@@ -106,10 +106,16 @@
 	//Author selection
 	var selectAuthor = $("#selectAuthor");
 	var space_selectAuthor = $("#space_selectAuthor");
-	var hdn_selectAuthorCount = $("#hdn_selectAuthorCount");	
+	var hdn_selectAuthorCount = $("#hdn_selectAuthorCount");
+	
+	$(function(){
+		selectAuthor = $("#selectAuthor");
+		space_selectAuthor = $("#space_selectAuthor");
+		hdn_selectAuthorCount = $("#hdn_selectAuthorCount");
+	});
 	
 	//Add author selection
-	$("#btn_addSelectAuthor").on("click", function(){
+	function addAuthorSelection(){
 		var selectAuthorCount = parseInt(hdn_selectAuthorCount.val());
 		
 		var newSelectAuthor = selectAuthor.clone();
@@ -118,7 +124,17 @@
 		space_selectAuthor.append(newSelectAuthor);
 		
 		hdn_selectAuthorCount.val(selectAuthorCount+1);
-	});
+	}
+	/*$("#btn_addSelectAuthor").on("click", function(){
+		var selectAuthorCount = parseInt(hdn_selectAuthorCount.val());
+		
+		var newSelectAuthor = selectAuthor.clone();
+		var selectBox = $(newSelectAuthor.find("select")[0]);
+		selectBox.attr("name", selectBox.attr("name").replace("_index_", selectAuthorCount));
+		space_selectAuthor.append(newSelectAuthor);
+		
+		hdn_selectAuthorCount.val(selectAuthorCount+1);
+	});*/
 	
 	//remove author selection
 	function removeSelectAuthor(elmnt){
@@ -140,12 +156,29 @@
 	}
 	
 	//New authors
-	var newAuthorForm = $("#newAuthorForm") 
+	var newAuthorForm = $("#newAuthorForm"); 
 	var space_newAuthor = $("#space_newAuthor");
 	var hdn_newAuthorCount = $("#hdn_newAuthorCount");
 	
+	$(function(){
+		newAuthorForm = $("#newAuthorForm");
+		space_newAuthor = $("#space_newAuthor");
+		hdn_newAuthorCount = $("#hdn_newAuthorCount");
+	});
+	
 	//Add new author form
-	$("#btn_addNewAuthor").on("click", function(){
+	function addNewAuthorForm(){
+		var newAuthorCount = parseInt(hdn_newAuthorCount.val());
+		var newAuthorFormClone = newAuthorForm.clone();
+		
+		newAuthorFormClone.find("input,textarea").each(function(index, element){
+			$(element).attr("name", $(element).attr("name").replace(/\[\d?\]/, "["+newAuthorCount+"]"));
+		});
+		space_newAuthor.append(newAuthorFormClone);
+		hdn_newAuthorCount.val(newAuthorCount+1);
+	}
+	
+	/*$("#btn_addNewAuthor").on("click", function(){
 		
 		var newAuthorCount = parseInt(hdn_newAuthorCount.val());
 		var newAuthorFormClone = newAuthorForm.clone();
@@ -155,7 +188,7 @@
 		});
 		space_newAuthor.append(newAuthorFormClone);
 		hdn_newAuthorCount.val(newAuthorCount+1);
-	});
+	});*/
 	
 	//Remove the new author form
 	function removeNewAuthorForm(elmnt){
@@ -196,9 +229,11 @@
 					"placeholder":"Where it is?"
 				});
 			bookSourceContainer.removeClass("hidden");
+			$("#infoPhysicalBook").show("fade");
 		} else if (value == 2){ //If is an eBook and reader has to upload a file
 			
 			bookFileContainer.removeClass("hidden");
+			$("#infoPhysicalBook").hide("fade");
 			
 		} else if (value == 3){ //If its an eBook URL
 			bookSourceValue.val(null).attr({
@@ -207,8 +242,10 @@
 				"placeholder":"eBook URL"
 			});
 			bookSourceContainer.removeClass("hidden");
+			$("#infoPhysicalBook").hide("fade");
 		} else {
 			bookSourceValue.attr("disabled",true);
+			$("#infoPhysicalBook").hide("fade");
 		}
 	}
 	

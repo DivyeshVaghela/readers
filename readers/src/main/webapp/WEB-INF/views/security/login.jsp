@@ -23,7 +23,7 @@
 		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
-				<input type="text" name="username" placeholder="Username" class="form-control" value="shankar" />
+				<input type="text" name="username" placeholder="Username" class="form-control" />
 			</div>
 		</div>
 	</div>
@@ -32,16 +32,29 @@
 		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 			<div class="input-group">
 				<span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
-				<input type="password" name="password" placeholder="Password" class="form-control" value="123456" />
+				<input type="password" name="password" placeholder="Password" class="form-control" />
 			</div>
 		</div>
 	</div>
 		
 	<div class="form-group">
-		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6 text-center">
+		<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
 			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
-			<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+			<button type="submit" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-log-in"></span> Login</button>
+			<a href="${contextRoot}/forgot-password" class="btn btn-link pull-right">Forgot Password?</a>
 		</div>
 	</div>
 
 </form>
+
+<c:if test="${not empty passwordChanged and passwordChanged}">
+
+	<script type="text/javascript">
+	
+		$(function(){
+			alert("Email : ${email}\nUsername : ${username}\nPassword : ${password}\nWe recommend you to change the password after a successful login.");
+		});
+	
+	</script>
+
+</c:if>

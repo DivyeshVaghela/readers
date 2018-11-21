@@ -17,8 +17,10 @@ import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.learning.readers.dao.IBookShareDAO;
+import com.learning.readers.dao.IReaderGroupDAO;
 import com.learning.readers.dao.IShareActionDAO;
 import com.learning.readers.entity.BookShare;
+import com.learning.readers.entity.GroupBook;
 import com.learning.readers.model.SetShareActionModel;
 import com.learning.readers.model.ShareActionValueModel;
 import com.learning.readers.model.ShareBookModel;
@@ -30,6 +32,8 @@ public class BookShareController {
 
 	@Autowired
 	IBookShareDAO bookShareDAO;
+	@Autowired
+	IReaderGroupDAO readerGroupDAO;
 	@Autowired
 	IShareActionDAO shareActionDAO;
 	
@@ -63,7 +67,7 @@ public class BookShareController {
 		
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
-		breadcrumbItems.put("Book", "/book");
+		breadcrumbItems.put("Book", "/");
 		breadcrumbItems.put("Shared", "/shared");
 		breadcrumbItems.put(bookShare.getBook().getFullName(), "book/shared"+bookShare.getBook().getId());
 		mv.addObject("breadcrumbItems", breadcrumbItems);
@@ -80,8 +84,8 @@ public class BookShareController {
 		
 		UserModel userModel = (UserModel)httpSession.getAttribute("userModel");
 		
+		// Share the book to Readers
 		List<BookShare> bookShareList = new ArrayList<>();
-		
 		for (int receiverUserId : shareBook.getSelectedUsers()) {
 			BookShare bookShare = new BookShare();
 			bookShare.setSenderId(userModel.getUserId());
@@ -91,9 +95,36 @@ public class BookShareController {
 			bookShareList.add(bookShare);
 		}
 		
+		// Share the Book in Groups
+		List<GroupBook> groupBookList = new ArrayList<>();
+		for (int groupId  : shareBook.getSelectedGroups()) {
+			GroupBook groupBook = new GroupBook();
+			groupBook.setGroupId(groupId);
+			groupBook.setBookId(shareBook.getBookId());
+			
+			groupBookList.add(groupBook);
+		}
+		
 		try {
-			bookShareDAO.share(bookShareList);
-			redirectAttributes.addFlashAttribute("successMessage", "Book shared with "+bookShareList.size()+" readers.");
+			if (bookShareList.size() > 0 || groupBookList.size() > 0) {
+				String successMessage = "Book shared with ";
+				if (bookShareList.size() > 0) {
+					bookShareDAO.share(bookShareList);
+					successMessage +=  bookShareList.size() + " readers";
+				}
+				if (groupBookList.size() > 0) {
+					bookShareDAO.shareToGroups(groupBookList);
+					if (bookShareList.size() > 0)
+						successMessage +=  " and ";
+					successMessage +=  groupBookList.size() + " groups";
+				}
+				successMessage += " successfully";
+				
+				redirectAttributes.addFlashAttribute("successMessage", successMessage);
+			} else {
+				String errorMessage = "No any reader or group were selected to share with.";
+				redirectAttributes.addFlashAttribute("errorMessage", errorMessage);
+			}
 		} catch (Exception exp) {
 			exp.printStackTrace();
 			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem in sharing book, please try again.");
@@ -110,7 +141,7 @@ public class BookShareController {
 		
 		ModelAndView mv = new ModelAndView();
 		
-		UserModel userModel = (UserModel)session.getAttribute("userModel");
+		//UserModel userModel = (UserModel)session.getAttribute("userModel");
 		
 		try {
 			bookShareDAO.takeShareAction(shareAction.getBookShareId(), shareAction.getShareActionId());

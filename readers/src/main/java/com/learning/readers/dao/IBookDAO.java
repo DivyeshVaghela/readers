@@ -20,11 +20,13 @@ public interface IBookDAO {
 	List<Book> list();
 	List<Book> list(int userId);
 	
-	List<BookOverviewModel> list(String orderByField, SortOrder sortOrder, int firstResult, int limit, FieldNameValue<String, Object> ... eqRestrictions);
+	List<BookOverviewModel> list(String orderByField, SortOrder sortOrder, int firstResult, int limit, List<FieldNameValue<String, Object>> eqRestrictions);
 	List<BookOverviewModel> list(int userId, int readStatusId, String orderByField, SortOrder sortOrder, Integer firstResult, Integer limit);
 	//List<BookOverviewModel> getWishList(int userId, String orderByField, SortOrder sortOrder, int firstResult, int limit);
 
 	List<BookNameEditionModel> listMyBooksNameEdition(int userId, String orderByField, SortOrder sortOrder, Integer firstResult, Integer limit);
 	
 	void update(Book book);
+	
+	int remove(int bookId);
 }

@@ -167,7 +167,7 @@ public class BookDAOTestCase {
 	//@Test
 	public void listBookOverview() {
 		
-		List<BookOverviewModel> list = bookDAO.list(null, null, 0, 10);
+		List<BookOverviewModel> list = bookDAO.list(null, null, 0, 10, null);
 		assertEquals("List got successfully", 7, list.size());
 	}
 	

@@ -12,8 +12,8 @@
 		<load-on-startup>1</load-on-startup>
 		
 		<multipart-config>
-			<max-file-size>2097152</max-file-size><!-- 1 MB -->
-			<max-request-size>4194304</max-request-size><!-- 2 MB -->
+			<max-file-size>104857600</max-file-size><!-- 100 MB -->
+			<max-request-size>104857600</max-request-size><!-- 100 MB -->
 			<file-size-threshold>1048576</file-size-threshold>
 		</multipart-config>
 	</servlet>

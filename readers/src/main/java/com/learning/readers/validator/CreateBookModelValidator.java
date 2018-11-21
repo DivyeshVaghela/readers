@@ -43,10 +43,10 @@ public class CreateBookModelValidator implements Validator {
 				}
 			}
 			
-			Integer readStatus = model.getReadStatus();
+			/*Integer readStatus = model.getReadStatus();
 			if (readStatus == null) {
 				errors.rejectValue("readStatus", null, "Read status is mandatory field");
-			}
+			}*/
 		}
 		else { //If it is used for updating a book
 			

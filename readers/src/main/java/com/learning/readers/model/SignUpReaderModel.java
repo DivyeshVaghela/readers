@@ -1,5 +1,10 @@
 package com.learning.readers.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotBlank;
 
@@ -17,6 +22,14 @@ public class SignUpReaderModel {
 	@NotBlank(message="Email is mandatory field")
 	@Email(message="Please enter a valid email address")
 	private String email;
+	
+	@NotNull(message="Please select secret question")
+	private Integer selectedSecretQuestion;
+	
+	private List<SecretQuestionModel> secretQuestionList = new ArrayList<>();
+
+	@NotBlank(message="Please mention the answer of the secret question")
+	private String secretQuestionAnswer;
 	
 	@NotBlank(message="Password is mandatory field")
 	private String password;
@@ -82,6 +95,26 @@ public class SignUpReaderModel {
 		this.passwordMatching = passwordMatching;
 	}*/
 	
+	public Integer getSelectedSecretQuestion() {
+		return selectedSecretQuestion;
+	}
+	public void setSelectedSecretQuestion(Integer selectedSecretQuestion) {
+		this.selectedSecretQuestion = selectedSecretQuestion;
+	}
+	public List<SecretQuestionModel> getSecretQuestionList() {
+		return secretQuestionList;
+	}
+	public void setSecretQuestionList(List<SecretQuestionModel> secretQuestionList) {
+		this.secretQuestionList = secretQuestionList;
+	}
+	
+	public String getSecretQuestionAnswer() {
+		return secretQuestionAnswer;
+	}
+	public void setSecretQuestionAnswer(String secretQuestionAnswer) {
+		this.secretQuestionAnswer = secretQuestionAnswer;
+	}
+
 	@Override
 	public String toString() {
 		return "SignUpReaderModel [username=" + username + ", email=" + email + ", password=" + password

@@ -15,61 +15,6 @@
 	<div class="col-md-9">
 
 		<!-- Main Content -->
-		<c:if test="${not empty model.resentlyAdded or fn:length(model.resentlyAdded) ne 0}">
-		
-			<h2>Recently added</h2>
-			<hr>
-	
-			<div class="container-fluid">
-				<div class="row">
-					<div class="col-md-12">
-						<div id="resentlyAdded" class="carousel slide">
-	
-							<spring:eval var="totalSlides" expression="T(java.lang.Math).ceil(T(java.lang.Double).parseDouble(${fn:length(model.resentlyAdded)}) div BOOK_PER_CAROUSEL_SCREEN) - 1"></spring:eval>
-							<c:if test="${totalSlides ne 0}">
-								<ol class="carousel-indicators">
-									<c:forEach begin="0" end="${totalSlides}" var="count">
-										<li data-target="#resentlyAdded" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
-									</c:forEach>
-								</ol>
-							</c:if>
-	
-							<!-- Carousel items -->
-							<div class="carousel-inner">
-	
-								<c:forEach begin="0" end="${totalSlides}" var="count">
-								
-									<div class="item ${count == 0 ? 'active' : ''}">
-										<div class="row">
-								
-											<c:forEach items="${model.resentlyAdded}" begin="${count * BOOK_PER_CAROUSEL_SCREEN}" end="${(count * BOOK_PER_CAROUSEL_SCREEN) + BOOK_PER_CAROUSEL_SCREEN - 1}" var="book" >
-												<%@include file="../shared/item-widget.jsp"%>
-												<%-- <jsp:include page="../shared/item-widget.jsp"></jsp:include> --%>
-											</c:forEach>
-								
-										</div>
-										<!-- /.row -->
-									</div>
-									<!-- /.item -->
-								</c:forEach>
-							</div>
-							<!--.carousel-inner-->
-							
-							<c:if test="${totalSlides ne 0}">
-								<a data-slide="prev" href="#resentlyAdded"
-									class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
-								<a data-slide="next"
-									href="#resentlyAdded" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
-							</c:if>
-						</div>
-						<!--.Carousel-->
-	
-					</div>
-				</div>
-			</div>
-			<!--.container-->
-		</c:if>
-		
 		<!-- wishlist -->
 		<c:if test="${not empty model.wishList or fn:length(model.wishList) ne 0}">
 		
@@ -126,6 +71,62 @@
 			<!--.container-->
 		</c:if>
 		<!-- /wishlist -->
+		
+		<c:if test="${not empty model.resentlyAdded or fn:length(model.resentlyAdded) ne 0}">
+			<!-- recently added -->
+			<h2>Recently added</h2>
+			<hr>
+	
+			<div class="container-fluid">
+				<div class="row">
+					<div class="col-md-12">
+						<div id="resentlyAdded" class="carousel slide">
+	
+							<spring:eval var="totalSlides" expression="T(java.lang.Math).ceil(T(java.lang.Double).parseDouble(${fn:length(model.resentlyAdded)}) div BOOK_PER_CAROUSEL_SCREEN) - 1"></spring:eval>
+							<c:if test="${totalSlides ne 0}">
+								<ol class="carousel-indicators">
+									<c:forEach begin="0" end="${totalSlides}" var="count">
+										<li data-target="#resentlyAdded" data-slide-to="${count}" class="${(count eq 0) ? 'active': ''}"></li>
+									</c:forEach>
+								</ol>
+							</c:if>
+	
+							<!-- Carousel items -->
+							<div class="carousel-inner">
+	
+								<c:forEach begin="0" end="${totalSlides}" var="count">
+								
+									<div class="item ${count == 0 ? 'active' : ''}">
+										<div class="row">
+								
+											<c:forEach items="${model.resentlyAdded}" begin="${count * BOOK_PER_CAROUSEL_SCREEN}" end="${(count * BOOK_PER_CAROUSEL_SCREEN) + BOOK_PER_CAROUSEL_SCREEN - 1}" var="book" >
+												<%@include file="../shared/item-widget.jsp"%>
+												<%-- <jsp:include page="../shared/item-widget.jsp"></jsp:include> --%>
+											</c:forEach>
+								
+										</div>
+										<!-- /.row -->
+									</div>
+									<!-- /.item -->
+								</c:forEach>
+							</div>
+							<!--.carousel-inner-->
+							
+							<c:if test="${totalSlides ne 0}">
+								<a data-slide="prev" href="#resentlyAdded"
+									class="left carousel-control" style="margin-top:auto;margin-bottom:auto;">&lt;</a>
+								<a data-slide="next"
+									href="#resentlyAdded" class="right carousel-control" style="margin-top:auto;margin-bottom:auto;">&gt;</a>
+							</c:if>
+						</div>
+						<!--.Carousel-->
+	
+					</div>
+				</div>
+			</div>
+			<!--.container-->
+			<!-- /recently added -->
+		</c:if>
 		
 		<!-- shared -->
 		<c:if test="${not empty model.sharedToMeBooks or fn:length(model.sharedToMeBooks) ne 0}">

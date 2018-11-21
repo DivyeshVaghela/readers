@@ -8,6 +8,7 @@ public class ReaderHomeModel {
 	private List<BookOverviewModel> resentlyAdded = new ArrayList<>();
 	private List<BookOverviewModel> wishList = new ArrayList<>();
 	private List<BookOverviewModel> sharedToMeBooks = new ArrayList<>();
+	private List<ReadlistOverviewModel> readlists = new ArrayList<>();
 	
 	public List<BookOverviewModel> getResentlyAdded() {
 		return resentlyAdded;
@@ -31,6 +32,14 @@ public class ReaderHomeModel {
 
 	public void setSharedToMeBooks(List<BookOverviewModel> sharedToMeBooks) {
 		this.sharedToMeBooks = sharedToMeBooks;
+	}
+
+	public List<ReadlistOverviewModel> getReadlists() {
+		return readlists;
+	}
+
+	public void setReadlists(List<ReadlistOverviewModel> readlists) {
+		this.readlists = readlists;
 	}
 	
 	

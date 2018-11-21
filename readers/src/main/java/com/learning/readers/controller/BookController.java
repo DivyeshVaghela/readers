@@ -26,6 +26,7 @@ import com.learning.readers.dao.IBookSourceDAO;
 import com.learning.readers.dao.IBookTypeDAO;
 import com.learning.readers.dao.IPublicationDAO;
 import com.learning.readers.dao.IReadStatusDAO;
+import com.learning.readers.dao.IReaderGroupDAO;
 import com.learning.readers.dao.IUserDAO;
 import com.learning.readers.entity.Author;
 import com.learning.readers.entity.Book;
@@ -45,6 +46,7 @@ import com.learning.readers.model.ShareBookModel;
 import com.learning.readers.model.UserModel;
 import com.learning.readers.util.ConstantUtil;
 import com.learning.readers.util.FileUploadUtil;
+import com.learning.readers.util.SortOrder;
 import com.learning.readers.validator.CreateBookModelValidator;
 import com.learning.readers.validator.CreateBookSourceModelValidator;
 
@@ -66,6 +68,8 @@ public class BookController {
 	IBookSourceDAO bookSourceDAO;
 	@Autowired
 	IUserDAO userDAO;
+	@Autowired
+	IReaderGroupDAO readerGroupDAO;
 	@Autowired
 	CreateBookModelValidator bookModelValidator;
 	@Autowired
@@ -105,7 +109,8 @@ public class BookController {
 			createReadProgressModel = new CreateReadProgressModel();
 			ReadDetail readDetails = null;
 			if (bookUser != null) {
-				createReadProgressModel.setReadStatus(bookUser.getStatus().getId());
+				if (bookUser.getStatus() != null)
+					createReadProgressModel.setReadStatus(bookUser.getStatus().getId());
 				readDetails = bookUser.getReadDetails();
 			}
 			CreateReadDetailsModel createReadDetailsModel = new CreateReadDetailsModel();
@@ -135,12 +140,13 @@ public class BookController {
 		ShareBookModel shareBookModel = new ShareBookModel();
 		shareBookModel.setBookId(book.getId());
 		shareBookModel.setUserNameEmailList(userDAO.listNameEmail(userModel.getUserId()));
+		shareBookModel.setReaderGroupList(readerGroupDAO.createdByMeNames(userModel.getUserId(), "name", SortOrder.ASC));
 		mv.addObject("shareBook", shareBookModel);
 		
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
-		breadcrumbItems.put("Book", "book");
-		breadcrumbItems.put(book.getFullName(), "book/"+book.getId());
+		breadcrumbItems.put("Book", "/");
+		breadcrumbItems.put(book.getFullName(), "/book/"+book.getId());
 		mv.addObject("breadcrumbItems", breadcrumbItems);
 		
 	}
@@ -189,7 +195,7 @@ public class BookController {
 		
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
-		breadcrumbItems.put("Book", "/book");
+		breadcrumbItems.put("Book", "/");
 		breadcrumbItems.put("New", "/book/create");
 		mv.addObject("breadcrumbItems", breadcrumbItems);
 		
@@ -306,13 +312,14 @@ public class BookController {
 		BookUser bookUser = new BookUser();
 		bookUser.setUser(user);
 		bookUser.setBook(book);
-		bookUser.setStatus(readStatusDAO.findById(model.getReadStatus()));
+		if (model.getReadStatus() != null)
+			bookUser.setStatus(readStatusDAO.findById(model.getReadStatus()));
 		book.getBookReaders().add(bookUser);
 		
 		//book.setStatus(readStatusDAO.findById(model.getReadStatus()));
 		
 		//Read details
-		if (model.getReadStatus() != 1) {
+		if (model.getReadStatus() != null && model.getReadStatus() != 1) {
 			ReadDetail readDetail = new ReadDetail();
 			
 			readDetail.setStartDate(model.getReadDetails().getStartDate());
@@ -394,12 +401,12 @@ public class BookController {
 		populateCreateBookModel(mv, model);
 		
 		mv.addObject("book", model);
-		mv.addObject("pageTitle", "Edit" + book.getFullName());
+		mv.addObject("pageTitle", "Edit " + book.getFullName());
 		
 		mv.addObject("contentPagePath", "./book/edit.jsp");
 		Map<String, String> breadcrumbItems = new LinkedHashMap<>();
 		breadcrumbItems.put("Home", "");
-		breadcrumbItems.put("Book", "/book");
+		breadcrumbItems.put("Book", "/");
 		breadcrumbItems.put(book.getFullName(), "/book/"+bookId);
 		breadcrumbItems.put("Edit", "/book/"+bookId+"/edit");
 		mv.addObject("breadcrumbItems", breadcrumbItems);		
@@ -648,6 +655,29 @@ public class BookController {
 		}
 		mv.setViewName("redirect:/book/"+bookSourceModel.getId());
 		
+		return mv;
+	}
+	
+	@RequestMapping(value = "/remove/{bookId}", method = RequestMethod.POST)
+	public ModelAndView remove(@PathVariable("bookId")int bookId,
+			RedirectAttributes redirectAttributes) {
+		
+		ModelAndView mv = new ModelAndView();
+		
+		try {
+			int removed = bookDAO.remove(bookId);
+			if (removed > 0) {
+				redirectAttributes.addFlashAttribute("successMessage", "Book removed successfully");
+			} else {
+				redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while removing book, please try again.");
+			}
+			
+		} catch (Exception exp) {
+			exp.printStackTrace();
+			redirectAttributes.addFlashAttribute("errorMessage", "There was some problem while removing book, please try again.");
+		}
+		
+		mv.setViewName("redirect:/");
 		return mv;
 	}
 }

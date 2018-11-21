@@ -2,6 +2,8 @@ package com.learning.readers.model;
 
 import java.util.Date;
 
+import com.learning.readers.util.GeneralUtil;
+
 public class BookOverviewModel {
 
 	private Integer id;
@@ -88,13 +90,15 @@ public class BookOverviewModel {
 		this.id = id;
 	}
 	public String getName() {
-		return name;
+		return GeneralUtil.nullOrString(name);
+		//return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public String getEdition() {
-		return edition;
+		return GeneralUtil.nullOrString(edition);
+		//return edition;
 	}
 	public void setEdition(String edition) {
 		this.edition = edition;

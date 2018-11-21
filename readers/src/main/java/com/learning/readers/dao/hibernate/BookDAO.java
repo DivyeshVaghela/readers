@@ -1,11 +1,14 @@
 package com.learning.readers.dao.hibernate;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.CriteriaUpdate;
 import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 
@@ -89,7 +92,8 @@ public class BookDAO implements IBookDAO {
 						bookPath.<String>get("details")))
 					.where(criteriaBuilder.and(
 							criteriaBuilder.equal(bookUserRoot.<User>get("user").<Integer>get("id"), userId),
-							criteriaBuilder.equal(bookUserRoot.<ReadStatus>get("status").<Integer>get("id"), readStatusId)
+							criteriaBuilder.equal(bookUserRoot.<ReadStatus>get("status").<Integer>get("id"), readStatusId),
+							criteriaBuilder.equal(bookPath.<Boolean>get("enabled"), true)
 						));
 				
 				if (orderByField != null) {
@@ -152,53 +156,9 @@ public class BookDAO implements IBookDAO {
 		});
 	}
 	
-	/*@Override
-	public List<BookOverviewModel> getWishList(int userId, String orderByField, SortOrder sortOrder, int firstResult, int limit){
-		
-		return hibernateTemplate.execute(new HibernateCallback<List<BookOverviewModel>>() {
-
-			@Override
-			public List<BookOverviewModel> doInHibernate(Session session) throws HibernateException {
-				
-				CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
-				CriteriaQuery<BookOverviewModel> criteriaQuery = criteriaBuilder.createQuery(BookOverviewModel.class);
-				
-				Root<BookUser> bookUserRoot = criteriaQuery.from(BookUser.class);
-				Path<Book> bookPath = bookUserRoot.<Book>get("book");
-				criteriaQuery
-					.select(criteriaBuilder.construct(BookOverviewModel.class, 
-						bookPath.<Integer>get("id"),
-						bookPath.<String>get("name"),
-						bookPath.<String>get("edition"),
-						bookPath.<String>get("coverPhoto"),
-						bookPath.<String>get("details")))
-					.where(criteriaBuilder.and(
-							criteriaBuilder.equal(bookUserRoot.<User>get("user").<Integer>get("id"), userId),
-							criteriaBuilder.equal(bookUserRoot.<ReadStatus>get("status").<Integer>get("id"), 1)
-						));
-				
-				if (orderByField != null) {
-					if (sortOrder == SortOrder.ASC) {
-						criteriaQuery.orderBy(criteriaBuilder.asc(bookUserRoot.get(orderByField)));
-					} else if (sortOrder == SortOrder.DESC) {
-						criteriaQuery.orderBy(criteriaBuilder.desc(bookUserRoot.get(orderByField)));
-					}
-				}
-
-				Query<BookOverviewModel> query = session.createQuery(criteriaQuery);
-				query.setFirstResult(firstResult);
-				if (limit != 0) {
-					query.setMaxResults(limit);
-				}
-				
-				return query.list();
-			}
-		});
-	}*/
-	
 	@Override
 	public List<BookOverviewModel> list(String orderByField, SortOrder sortOrder, int firstResult, int limit,
-			FieldNameValue<String, Object>... eqRestrictions) {
+			List<FieldNameValue<String, Object>> eqRestrictions) {
 
 		return hibernateTemplate.execute(new HibernateCallback<List<BookOverviewModel>>() {
 
@@ -213,10 +173,11 @@ public class BookDAO implements IBookDAO {
 						bookRoot.<String>get("name"), bookRoot.<String>get("edition"),
 						bookRoot.<String>get("coverPhoto"), bookRoot.<String>get("details")));
 
+				List<Predicate> predicates = new ArrayList<>();
 				for (FieldNameValue<String, Object> restriction : eqRestrictions) {
-					criteriaQuery
-							.where(criteriaBuilder.equal(bookRoot.get(restriction.getName()), restriction.getValue()));
+					predicates.add(criteriaBuilder.equal(bookRoot.get(restriction.getName()), restriction.getValue()));
 				}
+				criteriaQuery.where(predicates.toArray(new Predicate[] {}));
 
 				if (orderByField != null) {
 					if (sortOrder == SortOrder.ASC) {
@@ -272,4 +233,22 @@ public class BookDAO implements IBookDAO {
 		hibernateTemplate.update(book);
 	}
 
+	@Override
+	@Transactional
+	public int remove(int bookId) {
+		
+		return hibernateTemplate.execute(session -> {
+			
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaUpdate<Book> criteriaUpdate = criteriaBuilder.createCriteriaUpdate(Book.class);
+			
+			Root<Book> bookRoot = criteriaUpdate.from(Book.class);
+			criteriaUpdate.set(bookRoot.<Boolean>get("enabled"), false);
+			criteriaUpdate.where(criteriaBuilder.equal(bookRoot.<Integer>get("id"), bookId));
+			
+			return session.createQuery(criteriaUpdate).executeUpdate();
+		});
+	}
+
+	
 }

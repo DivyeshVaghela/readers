@@ -28,9 +28,26 @@
 			</div>
 			
 			<c:if test="${userModel.userId == book.userId}">
+				<script type="text/javascript">
+					function confirmRemove(){
+						return confirm("Please make sure that once you remove a book, you will not be able to get it back. Are you sure you want to remove this book?");
+					}
+				</script>
+			
+				<form action="${contextRoot}/book/remove/${book.id}" method="POST" onsubmit="return confirmRemove()" style="display:inline;">
+					<button type="submit" class="btn btn-link"><span class="glyphicon glyphicon-trash text-danger"></span></button>
+					<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}"/>
+				</form>
 				<a href="${contextRoot.concat('/book/edit/').concat(book.id)}" class="btn btn-link"><span class="glyphicon glyphicon-pencil"></span></a>
 			</c:if>
 			<c:if test="${not empty book.source and (book.source.type.id == 2 or book.source.type.id == 3)}">
+				
+				<!-- Share book -->
+				<button type="button" class="btn btn-link" data-toggle="modal" data-target="#bookShareForm">
+					<span class="glyphicon glyphicon-share"></span>
+				</button>
+				<!-- / Share book -->
+				
 				<c:choose>
 					<c:when test="${book.source.type.id == 2}">
 						<a class="btn btn-primary"
@@ -43,11 +60,6 @@
 					</c:when>
 				</c:choose>
 				
-				<!-- Share book -->
-				<button type="button" class="btn btn-link" data-toggle="modal" data-target="#bookShareForm">
-					<span class="glyphicon glyphicon-share"></span>
-				</button>
-				<!-- / Share book -->
 			</c:if>
 		</div>
 
@@ -71,26 +83,51 @@
 								<div class="col-sm-12">
 								
 									<sf:form modelAttribute="shareBook" action="${contextRoot}/book/share" method="POST">
+									
 										<div class="form-group">
-											<sf:hidden path="bookId"/>
+											<fieldset>
+												<legend>To Readers..</legend>
+											</fieldset>
+										</div>
+										<div class="form-group">
 											<sf:select path="selectedUsers" id="selectShareUsers" multiple="multiple">
 												<c:forEach items="${shareBook.userNameEmailList}" var="user">
 													<sf:option value="${user.userId}"> ${user.username} (${user.email})</sf:option>
 												</c:forEach>
 											</sf:select>
 										</div>
+										
 										<div class="form-group">
+											<fieldset>
+												<legend>To Groups..</legend>
+											</fieldset>
+										</div>
+										<div class="form-group">
+											<sf:select path="selectedGroups" id="selectShareGroups" multiple="multiple">
+												<c:forEach items="${shareBook.readerGroupList}" var="readerGroup">
+													<sf:option value="${readerGroup.id}"> ${readerGroup.name}</sf:option>
+												</c:forEach>
+											</sf:select>
+										</div>
+										
+										<div class="form-group">
+											<sf:hidden path="bookId"/>
 											<button type="submit" class="btn btn-primary pull-right">Share</button>
 										</div>
 									</sf:form>
 								
 									<script type="text/javascript">
-										$(function(){
-											$(".ms-parent").css({width:"100%"});
-										});
-								        $("#selectShareUsers").multipleSelect({
+										$("#selectShareUsers").multipleSelect({
 								        	selectAll:false,
 								        	placeholder:"Select Reader(s) to share..",
+								            filter: true,
+											minimumCountSelected: 0,
+											countSelected: "# selected"
+								        });
+									
+								        $("#selectShareGroups").multipleSelect({
+								        	selectAll:false,
+								        	placeholder:"Select Group(s) to share..",
 								            filter: true,
 											minimumCountSelected: 0,
 											countSelected: "# selected"
@@ -98,11 +135,6 @@
 								    </script>
 								</div>
 							</div>
-						</div>
-	
-						<!-- Model footer -->
-						<div class="modal-footer">
-							<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
 						</div>
 					</div>
 					<!-- / Model dialog content -->
@@ -248,7 +280,7 @@
 					<strong>Progress Status:</strong><br/>
 					<c:forEach items="${readProgress.readStatusList}" var="readStatus">
 						<c:if test="${readStatus.id eq readProgress.readStatus}">
-							<c:set var="readStatusValue" value="${readStatus.value}"></c:set>
+							<c:set var="readStatusValue" value="${readStatus.value}" scope="request"></c:set>
 						</c:if>
 					</c:forEach>
 					<c:choose>
@@ -432,10 +464,6 @@
 									</div>
 								</div>
 								
-								<!-- Model footer -->
-								<div class="modal-footer">
-									<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-								</div>
 							</div>
 							<!-- / Model dialog content -->
 						</div>
@@ -461,47 +489,13 @@
 		<!-- /.col-md-4 -->
 	</div>
 	<!-- /.row -->
+</div>
 
-	<hr/>
-	
-	<!-- .row -->
-	<div class="row">
-		<c:if test="${not empty book.details}">
-			<p class="col-lg-12">${book.details}</p>
-		</c:if>
-	</div>
-	<!-- /.row -->
+<br/>
+<div class="row">
 
-	<!-- Content Row -->
-	<div class="row">
-		<div class="col-sm-4">
-			<h2>Heading 1</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-				Saepe rem nisi accusamus error velit animi non ipsa placeat.
-				Recusandae, suscipit, soluta quibusdam accusamus a veniam quaerat
-				eveniet eligendi dolor consectetur.</p>
-			<a class="btn btn-default" href="#">More Info</a>
-		</div>
-		<!-- /.col-md-4 -->
-		<div class="col-sm-4">
-			<h2>Heading 2</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-				Saepe rem nisi accusamus error velit animi non ipsa placeat.
-				Recusandae, suscipit, soluta quibusdam accusamus a veniam quaerat
-				eveniet eligendi dolor consectetur.</p>
-			<a class="btn btn-default" href="#">More Info</a>
-		</div>
-		<!-- /.col-md-4 -->
-		<div class="col-sm-4">
-			<h2>Heading 3</h2>
-			<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-				Saepe rem nisi accusamus error velit animi non ipsa placeat.
-				Recusandae, suscipit, soluta quibusdam accusamus a veniam quaerat
-				eveniet eligendi dolor consectetur.</p>
-			<a class="btn btn-default" href="#">More Info</a>
-		</div>
-		<!-- /.col-md-4 -->
+	<div class="col-sm-12">
+		<p>${book.details}</p>
 	</div>
-	<!-- /.row -->
 
 </div>

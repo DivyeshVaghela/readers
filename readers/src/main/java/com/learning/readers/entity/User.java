@@ -16,6 +16,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.DynamicInsert;
@@ -37,6 +38,16 @@ public class User {
 	
 	@Column(name="email")
 	private String email;
+	
+	@OneToOne(cascade=CascadeType.ALL, fetch=FetchType.LAZY)
+	@JoinColumn(name="secret_question_id", insertable=false, updatable=false)
+	private SecretQuestion secretQuestion;
+	
+	@Column(name="secret_question_id")
+	private Integer secretQuestionId;
+	
+	@Column(name="secret_answer")
+	private String secretAnswer;
 	
 	@Column(name="password")
 	private String password;
@@ -136,6 +147,54 @@ public class User {
 	public void addRole(Role role) {
 		this.getRoles().add(role);
 		role.getUsers().add(this);
+	}
+	
+	public SecretQuestion getSecretQuestion() {
+		return secretQuestion;
+	}
+
+	public void setSecretQuestion(SecretQuestion secretQuestion) {
+		this.secretQuestion = secretQuestion;
+	}
+
+	public String getSecretAnswer() {
+		return secretAnswer;
+	}
+
+	public void setSecretAnswer(String secretAnswer) {
+		this.secretAnswer = secretAnswer;
+	}
+
+	public List<BookUser> getBookUsers() {
+		return bookUsers;
+	}
+
+	public void setBookUsers(List<BookUser> bookUsers) {
+		this.bookUsers = bookUsers;
+	}
+
+	public List<BookShare> getSharedByMeBooks() {
+		return sharedByMeBooks;
+	}
+
+	public void setSharedByMeBooks(List<BookShare> sharedByMeBooks) {
+		this.sharedByMeBooks = sharedByMeBooks;
+	}
+
+	public List<BookShare> getSharedToMeBooks() {
+		return sharedToMeBooks;
+	}
+
+	public void setSharedToMeBooks(List<BookShare> sharedToMeBooks) {
+		this.sharedToMeBooks = sharedToMeBooks;
+	}
+
+	public Integer getSecretQuestionId() {
+		return secretQuestionId;
+	}
+
+	public void setSecretQuestionId(Integer secretQuestionId) {
+		this.secretQuestionId = secretQuestionId;
 	}
 
 	@Override

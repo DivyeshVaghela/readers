@@ -2,6 +2,20 @@
 	min-height: 80vh;
 }
 
+.panel-heading .accordion-toggle:after {
+	/* symbol for "opening" panels */
+	font-family: 'Glyphicons Halflings';
+	/* essential for enabling glyphicon */
+	content: "\e114"; /* adjust as needed, taken from bootstrap.css */
+	float: right; /* adjust as needed */
+	color: grey; /* adjust as needed */
+}
+
+.panel-heading .accordion-toggle.collapsed:after {
+	/* symbol for "collapsed" panels */
+	content: "\e080"; /* adjust as needed, taken from bootstrap.css */
+}
+
 .help-block {
 	color: red;
 	font-size: 12px;
@@ -48,47 +62,50 @@ textarea.only-vertical {
 	background: #428bca;
 }
 
-.carousel-image-wrapper{
-	height:205px;
+.carousel-image-wrapper {
+	height: 205px;
 }
 
-.carousel-image{
-	margin:auto;
-	margin-top:auto;
-	margin-bottom:auto;
-	height:100%;
-	width:100%;
+.carousel-image {
+	margin: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	height: 100%;
+	width: 100%;
 }
 
 .carousel a:hover {
 	text-decoration: none;
 }
 
-.breadcrumb.transparent{
+.breadcrumb.transparent {
 	background-color: transparent;
 }
 
-.image-warpper{
-	height:400px;
-}
-.image-warpper img{
-	margin:auto;
-	margin-top:auto;
-	margin-bottom:auto;
-	height:100%;
-	width:100%;
+.image-warpper {
+	height: 400px;
 }
 
-.ms-parent input[type=checkbox]{
-	margin:auto;
+.image-warpper img {
+	margin: auto;
+	margin-top: auto;
+	margin-bottom: auto;
+	height: 100%;
+	width: 100%;
 }
 
-.panel-heading.inner{
-	padding:0;
+.ms-parent input[type=checkbox] {
+	margin: auto;
 }
-.panel.inner{
-	margin:0;
+
+.panel-heading.inner {
+	padding: 0;
 }
-.list-group.inner > a {
-	padding-left:50px;
+
+.panel.inner {
+	margin: 0;
+}
+
+.list-group.inner>a {
+	padding-left: 50px;
 }

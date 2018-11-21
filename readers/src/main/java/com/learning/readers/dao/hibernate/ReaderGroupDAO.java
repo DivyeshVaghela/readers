@@ -34,6 +34,7 @@ import com.learning.readers.entity.Publication;
 import com.learning.readers.entity.ReaderGroup;
 import com.learning.readers.entity.User;
 import com.learning.readers.model.CreateReaderGroupModel;
+import com.learning.readers.model.ReaderGroupIdNameModel;
 import com.learning.readers.model.ReaderGroupOverviewModel;
 import com.learning.readers.util.SortOrder;
 
@@ -106,6 +107,42 @@ public class ReaderGroupDAO implements IReaderGroupDAO {
 				criteriaQuery.orderBy(criteriaBuilder.desc(readerGroupRoot.<Date>get(orderByField_local)));
 			}
 			
+			return session.createQuery(criteriaQuery).list();
+		});
+	}
+	
+	@Override
+	public List<ReaderGroupIdNameModel> createdByMeNames(int creatorId, String orderByField, SortOrder order){
+		
+		return hibernateTemplate.execute(session -> {
+			
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<ReaderGroupIdNameModel> criteriaQuery = criteriaBuilder.createQuery(ReaderGroupIdNameModel.class);
+			
+			Root<ReaderGroup> readerGroupRoot = criteriaQuery.from(ReaderGroup.class);
+			
+			criteriaQuery
+				.select(criteriaBuilder.construct(ReaderGroupIdNameModel.class,
+					readerGroupRoot.<Integer>get("id"),
+					readerGroupRoot.<String>get("name")))
+				.where(criteriaBuilder.and(
+						criteriaBuilder.equal(readerGroupRoot.<Integer>get("creatorId"), creatorId),
+						criteriaBuilder.equal(readerGroupRoot.<Boolean>get("enabled"), true)));
+			
+			String orderByField_local = "creationTime";
+			if (orderByField != null)
+				orderByField_local = orderByField;
+			
+			SortOrder order_local = SortOrder.DESC;
+			if (order != null)
+				order_local = order;
+			
+			if (order_local == SortOrder.ASC) {
+				criteriaQuery.orderBy(criteriaBuilder.asc(readerGroupRoot.get(orderByField_local)));
+			} else if (order_local == SortOrder.DESC) {
+				criteriaQuery.orderBy(criteriaBuilder.desc(readerGroupRoot.get(orderByField_local)));
+			}
+				
 			return session.createQuery(criteriaQuery).list();
 		});
 	}
@@ -520,6 +557,16 @@ public class ReaderGroupDAO implements IReaderGroupDAO {
 			
 			hibernateTemplate.save(groupBook);
 		});
+	}
+	
+	@Override
+	@Transactional
+	public void addBook(int readerGroupId, int bookId) {
+		GroupBook groupBook = new GroupBook();
+		groupBook.setGroupId(readerGroupId);
+		groupBook.setBookId(bookId);
+		
+		hibernateTemplate.save(groupBook);
 	}
 	
 	@Override

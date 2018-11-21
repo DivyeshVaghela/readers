@@ -6,7 +6,8 @@
 	<blockquote>
 		<p>${exceptionInfo.message}</p>
 		
-		<a href="${contextRoot}" class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Back to Home</button></a>
+		<a href="javascript:history.back()" class="btn btn-default"><span class="glyphicon glyphicon-menu-left"></span> Back</a>
+		<a href="${contextRoot}" class="btn btn-default"><span class="glyphicon glyphicon-home"></span> Home</a>
 	</blockquote>
 
 </div>

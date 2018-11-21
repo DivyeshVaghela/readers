@@ -21,6 +21,7 @@ import com.learning.readers.dao.IReadStatusDAO;
 import com.learning.readers.entity.Book;
 import com.learning.readers.entity.BookShare;
 import com.learning.readers.entity.BookUser;
+import com.learning.readers.entity.GroupBook;
 import com.learning.readers.entity.User;
 import com.learning.readers.model.BookOverviewModel;
 import com.learning.readers.util.SortOrder;
@@ -46,10 +47,16 @@ public class BookShareDAO implements IBookShareDAO {
 		return (Integer) hibernateTemplate.save(newBookShare);
 	}
 	
-	@Transactional
 	@Override
+	@Transactional
 	public void share(List<BookShare> bookShareList) {
 		bookShareList.forEach(bookShare -> hibernateTemplate.save(bookShare));
+	}
+	
+	@Override
+	@Transactional
+	public void shareToGroups(List<GroupBook> groupBookList) {
+		groupBookList.forEach(groupBook -> hibernateTemplate.save(groupBook));
 	}
 	
 	@Override
@@ -126,7 +133,8 @@ public class BookShareDAO implements IBookShareDAO {
 						bookShareRoot.<User>get("receiver").<String>get("email")))
 				.where(criteriaBuilder.and(
 						criteriaBuilder.equal(bookShareRoot.<Integer>get("receiverId"), receiverId),
-						criteriaBuilder.isNull(bookShareRoot.<Integer>get("actionId"))));
+						criteriaBuilder.isNull(bookShareRoot.<Integer>get("actionId")),
+						criteriaBuilder.equal(bookPath.<Boolean>get("enabled"), true)));
 			
 			if (orderByField != null) {
 				if (sortOrder == SortOrder.ASC) {

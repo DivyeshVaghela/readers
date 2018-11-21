@@ -34,6 +34,29 @@
 				<sf:errors path="username" class="help-block"/>
 			</div>
 		</div>
+		
+		<div class="form-group">
+			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-question-sign"></i></span>
+					<sf:select path="selectedSecretQuestion" class="form-control" onchange="secretQuestionSelected(this.value)">
+						<sf:option value="">Select Secret Question..</sf:option>
+						<sf:options items="${ signUpReaderModel.secretQuestionList }" itemValue="id" itemLabel="question"/>
+					</sf:select>
+				</div>
+				<sf:errors path="selectedSecretQuestion" class="help-block"/>
+			</div>
+		</div>
+	
+		<div class="form-group">
+			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
+				<div class="input-group">
+					<span class="input-group-addon"><i class="glyphicon glyphicon-flag"></i></span>
+					<sf:input path="secretQuestionAnswer" type="text" placeholder="Answer" class="form-control" disabled="true"/>
+				</div>
+				<sf:errors path="secretQuestionAnswer" class="help-block"/>
+			</div>
+		</div>
 
 		<div class="form-group">
 			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
@@ -57,10 +80,24 @@
 		</div>
 		
 		<div class="form-group">
-			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6 text-center">
-				<button type="submit" class="btn btn-primary"><span class="glyphicon glyphicon-user"></span> Sign up</button>
+			<div class="col-md-offset-4 col-md-4 col-sm-offset-3 col-sm-6">
+				<button type="submit" class="btn btn-primary pull-left"><span class="glyphicon glyphicon-user"></span> Sign up</button>
+				<a href="${contextRoot}/login" class="btn btn-success pull-right"><span class="glyphicon glyphicon-log-in"></span> Login</a>
 			</div>
 		</div>
 	</sf:form>
 
 </div>
+
+<script type="text/javascript">
+
+	function secretQuestionSelected(value){
+		
+		if (value==null || value==""){
+			$("#secretQuestionAnswer").attr("disabled","disabled");
+		} else {
+			$("#secretQuestionAnswer").attr("disabled", false);
+		}
+	}
+
+</script>

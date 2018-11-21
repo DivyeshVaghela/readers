@@ -138,7 +138,7 @@
 							</c:choose>
 						</div>
 						<div>
-							<button type="button" id="btn_addSelectAuthor" class="btn btn-info pull-right"><span class="glyphicon glyphicon-plus"></span> Add Author</button>
+							<button type="button" id="btn_addSelectAuthor" class="btn btn-info pull-right" onclick="addAuthorSelection()"><span class="glyphicon glyphicon-plus"></span> Add Author</button>
 						</div>
 					</div>
 					
@@ -227,7 +227,7 @@
 							</c:choose>
 						</div>
 						<div>
-							<button type="button" id="btn_addNewAuthor" class="btn btn-info pull-right"><span class="glyphicon glyphicon-plus"></span> Add Author</button>
+							<button type="button" id="btn_addNewAuthor" class="btn btn-info pull-right" onclick="addNewAuthorForm()"><span class="glyphicon glyphicon-plus"></span> Add Author</button>
 						</div>
 						
 					</div>
@@ -275,6 +275,11 @@
 		</div>
 		<!-- /Book upload -->
 		
+		<div class="form-group" id="infoPhysicalBook" style="display:none;">
+			<div class="col-md-offset-3 col-md-6 col-sm-offset-2 col-sm-8 alert alert-info">
+				<strong><i>NOTE:</i></strong> Please make sure that if the book is a Physical Book, you'll not be able to share that book.
+			</div>
+		</div>
 		<!-- /Book-Source-Details -->
 		
 		<!-- Read-Status -->

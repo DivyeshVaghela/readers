@@ -15,7 +15,7 @@ import com.learning.readers.model.UserModel;
 public class ReaderGroupModelValidator implements Validator {
 
 	@Autowired
-	IReaderGroupDAO readerGroupName;
+	IReaderGroupDAO readerGroupDAO;
 	@Autowired
 	HttpSession httpSession;
 	
@@ -35,7 +35,7 @@ public class ReaderGroupModelValidator implements Validator {
 			errors.rejectValue("selectedMemberdId", null, "Please select at least one member");
 		}
 		
-		if (readerGroupName.exists(userModel.getUserId(), model.getName())) {
+		if (readerGroupDAO.exists(userModel.getUserId(), model.getName())) {
 			errors.rejectValue("name", null, "You have already created a group with this name.");
 		}
 	}

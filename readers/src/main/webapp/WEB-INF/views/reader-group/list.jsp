@@ -5,9 +5,7 @@
 <div class="row">
 
 	<div class="col-md-3">
-	
 		<%@ include file="../shared/side-navbar.jsp" %>
-		
 	</div>
 
 	<div class="col-md-9">
@@ -91,14 +89,14 @@
 </script>
 
 <c:choose>
-	<c:when test="${readerGroups[0].creatorId eq userModel.userId}">
+	<c:when test="${not empty group && group eq 'My'}">
 		<script type="text/javascript">
 			$(function(){
 				$('#sideNav_myGroup').addClass("active");
 			});
 		</script>
 	</c:when>
-	<c:when test="${readerGroups[0].creatorId ne userModel.userId}">
+	<c:when test="${empty group || group ne 'My'}">
 		<script type="text/javascript">
 			$(function(){
 				$('#sideNav_groups').addClass("active");

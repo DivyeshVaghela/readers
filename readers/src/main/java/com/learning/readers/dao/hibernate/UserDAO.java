@@ -17,6 +17,7 @@ import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.stereotype.Repository;
 
 import com.learning.readers.dao.IUserDAO;
+import com.learning.readers.entity.SecretQuestion;
 import com.learning.readers.entity.User;
 import com.learning.readers.model.UserNameEmailModel;
 
@@ -141,5 +142,28 @@ public class UserDAO implements IUserDAO {
 		//return hibernateTemplate.load(User.class, userId);
 	}
 
+
+	@Override
+	public String getSecretQuestion(int userId) {
+		
+		return hibernateTemplate.execute(session -> {
+			
+			CriteriaBuilder criteriaBuilder = session.getCriteriaBuilder();
+			CriteriaQuery<String> criteriaQuery = criteriaBuilder.createQuery(String.class);
+			
+			Root<User> userRoot = criteriaQuery.from(User.class);
+			criteriaQuery
+				.select(userRoot.<SecretQuestion>get("secretQuestion").<String>get("question"))
+				.where(criteriaBuilder.equal(userRoot.<Integer>get("id"), userId));
+			
+			return session.createQuery(criteriaQuery).uniqueResult();
+		});
+	}
+
+	@Override
+	@Transactional
+	public void update(User user) {
+		hibernateTemplate.update(user);
+	}
 	
 }

@@ -8,6 +8,9 @@ public class ShareBookModel {
 	private int[] selectedUsers;
 	private List<UserNameEmailModel> userNameEmailList;
 	
+	private int[] selectedGroups;
+	private List<ReaderGroupIdNameModel> readerGroupList;
+	
 	public int getBookId() {
 		return bookId;
 	}
@@ -25,6 +28,18 @@ public class ShareBookModel {
 	}
 	public void setUserNameEmailList(List<UserNameEmailModel> userNameEmailList) {
 		this.userNameEmailList = userNameEmailList;
+	}
+	public int[] getSelectedGroups() {
+		return selectedGroups;
+	}
+	public void setSelectedGroups(int[] selectedGroups) {
+		this.selectedGroups = selectedGroups;
+	}
+	public List<ReaderGroupIdNameModel> getReaderGroupList() {
+		return readerGroupList;
+	}
+	public void setReaderGroupList(List<ReaderGroupIdNameModel> readerGroupList) {
+		this.readerGroupList = readerGroupList;
 	}
 	
 	

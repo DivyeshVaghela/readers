@@ -22,6 +22,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
+import com.learning.readers.util.GeneralUtil;
+
 @Entity
 @Table(name="book")
 @DynamicInsert
@@ -118,7 +120,8 @@ public class Book {
 	}
 
 	public String getName() {
-		return name;
+		return GeneralUtil.nullOrString(name);
+		//return name;
 	}
 
 	public void setName(String name) {
@@ -126,9 +129,10 @@ public class Book {
 	}
 
 	public String getEdition() {
-		if (edition.isEmpty())
+		return GeneralUtil.nullOrString(edition);
+		/*if (edition.isEmpty())
 			return null;
-		return edition;
+		return edition;*/
 	}
 
 	public void setEdition(String edition) {

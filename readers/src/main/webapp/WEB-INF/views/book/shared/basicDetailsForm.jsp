@@ -75,11 +75,13 @@
 
 <script>
 	//select date time after submit and returning to this page
-	publishedYear.val(${book.basicDetails.publishedYear});
-	var publishedMonthSelected = ${book.basicDetails.publishedMonth}+"";
-	if (publishedMonthSelected != ""){
-		publishedMonth.val(publishedMonthSelected);		
-	}
-	populateDateInDropdown('publishedYear', 'publishedMonth', 'publishedDate');
-	publishedDate.val(${book.basicDetails.publishedDate});
+	$(function(){
+		publishedYear.val(${book.basicDetails.publishedYear});
+		var publishedMonthSelected = ${book.basicDetails.publishedMonth}+"";
+		if (publishedMonthSelected != ""){
+			publishedMonth.val(publishedMonthSelected);		
+		}
+		populateDateInDropdown('publishedYear', 'publishedMonth', 'publishedDate');
+		publishedDate.val(${book.basicDetails.publishedDate});
+	});
 </script>

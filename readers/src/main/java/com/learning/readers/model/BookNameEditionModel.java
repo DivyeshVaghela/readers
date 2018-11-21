@@ -1,12 +1,12 @@
 package com.learning.readers.model;
 
+import com.learning.readers.util.GeneralUtil;
+
 public class BookNameEditionModel {
 
 	private Integer id;
 	private String name;
 	private String edition;
-	
-	
 	
 	public BookNameEditionModel() {}
 	public BookNameEditionModel(Integer id, String name, String edition) {
@@ -21,16 +21,21 @@ public class BookNameEditionModel {
 		this.id = id;
 	}
 	public String getName() {
-		return name;
+		return GeneralUtil.nullOrString(name);
+		//return name;
 	}
 	public void setName(String name) {
 		this.name = name;
 	}
 	public String getEdition() {
-		return edition;
+		return GeneralUtil.nullOrString(edition);
+		//return edition;
 	}
 	public void setEdition(String edition) {
 		this.edition = edition;
+	}
+	public String getFullName() {
+		return this.getName() + (this.getEdition() == null ? "" : " (" + this.getEdition() + ")");
 	}
 	
 	

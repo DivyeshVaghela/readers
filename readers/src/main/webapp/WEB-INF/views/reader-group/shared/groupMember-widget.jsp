@@ -21,7 +21,8 @@
 				<div class="row">
 					<div class="col-sm-12">
 						<h5 class="text-center" title="${user.username}">
-							<a href="${contextRoot.concat('/user/').concat(''+user.id)}">
+							<%-- ${contextRoot.concat('/user/').concat(''+user.id)} --%>
+							<a href="#">
 										${user.username} </a>
 						</h5>
 						

@@ -1,29 +1,7 @@
 <br>
 <br>
 
-
-<style type="text/css">
-.panel-heading .accordion-toggle:after {
-    /* symbol for "opening" panels */
-    font-family: 'Glyphicons Halflings';  /* essential for enabling glyphicon */
-    content: "\e114";    /* adjust as needed, taken from bootstrap.css */
-    float: right;        /* adjust as needed */
-    color: grey;         /* adjust as needed */
-}
-.panel-heading .accordion-toggle.collapsed:after {
-    /* symbol for "collapsed" panels */
-    content: "\e080";    /* adjust as needed, taken from bootstrap.css */
-}
-</style>
-
-
 <div class="panel">
-	<!-- <div class="panel-heading">
-				<h4 class="panel-title">
-					<a data-toggle="collapse" data-parent="#accordion"
-						href="#quickLinks">Quick Links</a>
-				</h4>
-			</div> -->
 	<div class="panel-collapse collapse in">
 		<div class="list-group">
 			<a href="${contextRoot}" id="sideNav_home" class="list-group-item">
@@ -48,6 +26,20 @@
 					<div class="list-group inner">
 						<a href="${contextRoot}/shared" id="sideNav_shared" class="list-group-item">To Me</a>
 						<a href="${contextRoot}/shared/history" id="sideNav_sharedHistory" class="list-group-item">History</a>
+					</div>
+				</div>
+			</div>
+			
+			<div class="panel inner">
+				<div class="panel-heading inner">
+					<a data-toggle="collapse" href="#subMenu_readlist" id="subMenuLink_readlist" class="list-group-item accordion-toggle collapsed">
+						<span class="glyphicon glyphicon-th-list"></span> Readlist
+					</a>
+				</div>
+				<div id="subMenu_readlist" class="panel-collapse collapse">
+					<div class="list-group inner">
+						<a href="${contextRoot}/readlist" id="sideNav_readlist" class="list-group-item">All</a>
+						<a href="${contextRoot}/readlist/create" id="sideNav_createReadlist" class="list-group-item">Create</a>
 					</div>
 				</div>
 			</div>

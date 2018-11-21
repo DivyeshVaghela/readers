@@ -15,4 +15,8 @@ public interface IUserDAO {
 	User findByEmail(String email);
 	User findById(int userId);
 	Integer create(User user);
+	
+	void update(User user);
+	
+	String getSecretQuestion(int userId);
 }

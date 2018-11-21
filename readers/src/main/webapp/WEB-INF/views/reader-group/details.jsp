@@ -2,6 +2,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
 <div>
 
@@ -87,7 +88,7 @@
 							<div class="col-sm-offset-2 col-sm-8">
 	
 								<sf:form modelAttribute="readerGroupModel"
-									action="${contextRoot}/group/${group.id}/editGroupBooks/"
+									action="${contextRoot}/group/my/${group.id}/editGroupBooks/"
 									method="POST">
 									<div class="form-group">
 									
@@ -224,7 +225,7 @@
 							<div class="col-sm-offset-2 col-sm-8">
 	
 								<sf:form modelAttribute="readerGroupModel"
-									action="${contextRoot}/group/${group.id}/editGroupMembers/"
+									action="${contextRoot}/group/my/${group.id}/editGroupMembers/"
 									method="POST">
 									<div class="form-group">
 									
